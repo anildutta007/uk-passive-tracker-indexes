@@ -4,8 +4,9 @@
  */
 
 const state = {
-  selectedIndexId: "sp500",
+  selectedIndexId: "nasdaq100",
   regionFilter: "ALL",
+  sortBy: "cagr20_desc",
   lumpSum: 10000,
   compareFundRank: 1, // "ALL" or 1..5
   showMasterMatrix: true,
@@ -24,6 +25,9 @@ const FUND_COLORS = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.UK_PASSIVE_INDEXES && window.UK_PASSIVE_INDEXES.length > 0) {
+    state.selectedIndexId = window.UK_PASSIVE_INDEXES[0].id;
+  }
   initTopKPIs();
   bindEvents();
   renderAll();
@@ -31,6 +35,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.lucide.createIcons();
   }
 });
+
+function getSortedIndexes() {
+  const list = [...window.UK_PASSIVE_INDEXES];
+  switch (state.sortBy) {
+    case "cagr10_desc":
+      return list.sort((a, b) => b.metrics.cagr10 - a.metrics.cagr10);
+    case "cagr5_desc":
+      return list.sort((a, b) => b.metrics.cagr5 - a.metrics.cagr5);
+    case "ytd_desc":
+      return list.sort((a, b) => (b.yearlyReturns["2026 YTD"] || 0) - (a.yearlyReturns["2026 YTD"] || 0));
+    case "ocf_asc":
+      return list.sort((a, b) => a.lowestOcf - b.lowestOcf || b.metrics.cagr20 - a.metrics.cagr20);
+    case "cagr20_desc":
+    default:
+      return list.sort((a, b) => b.metrics.cagr20 - a.metrics.cagr20);
+  }
+}
 
 function initTopKPIs() {
   const sortedByCagr = [...window.UK_PASSIVE_INDEXES].sort((a, b) => b.metrics.cagr20 - a.metrics.cagr20);
@@ -44,6 +65,17 @@ function initTopKPIs() {
 }
 
 function bindEvents() {
+  // Sort Dropdown
+  const sortSelect = document.getElementById("index-sort-select");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", (e) => {
+      state.sortBy = e.target.value || "cagr20_desc";
+      renderIndexCards();
+      renderMasterMatrix();
+      if (state.showAllCatalogMode) renderAllIndexesCatalog();
+    });
+  }
+
   // Region Filter Buttons
   document.querySelectorAll(".region-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -188,13 +220,14 @@ function renderAll() {
 }
 
 /**
- * 1. Render the 12 UK Passive Tracker Index Cards
+ * 1. Render the 12 UK Passive Tracker Index Cards (Sorted Descending by Return)
  */
 function renderIndexCards() {
   const grid = document.getElementById("index-cards-grid");
   if (!grid) return;
 
-  const filtered = window.UK_PASSIVE_INDEXES.filter(idx => {
+  const sorted = getSortedIndexes();
+  const filtered = sorted.filter(idx => {
     if (state.regionFilter === "ALL") return true;
     if (state.regionFilter === "Global") return idx.region.includes("Global");
     if (state.regionFilter === "North America") return idx.region === "North America";
@@ -204,10 +237,11 @@ function renderIndexCards() {
 
   const scaleFactor = state.lumpSum / 10000;
 
-  grid.innerHTML = filtered.map(idx => {
+  grid.innerHTML = filtered.map((idx, pos) => {
     const isSelected = idx.id === state.selectedIndexId;
     const topFund = idx.topFunds[0];
     const scaledPot = Math.round(idx.metrics.value10k * scaleFactor);
+    const rankNum = idx.returnRank || (pos + 1);
 
     return `
       <div onclick="selectIndex('${idx.id}', false)"
@@ -218,13 +252,20 @@ function renderIndexCards() {
            }">
         <div>
           <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-              isSelected ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600"
-            }">
-              ${idx.category}
-            </span>
+            <div class="flex items-center gap-1.5">
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black ${
+                rankNum <= 3 ? "bg-emerald-600 text-white" : "bg-slate-800 text-white"
+              }" title="20-Year Return Rank #${rankNum} of 12">
+                #${rankNum}
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                isSelected ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600"
+              }">
+                ${idx.category}
+              </span>
+            </div>
             <span class="text-[11px] font-mono font-semibold text-slate-500">
-              OCF from ${idx.lowestOcf.toFixed(2)}%
+              OCF ${idx.lowestOcf.toFixed(2)}%
             </span>
           </div>
 
@@ -261,7 +302,7 @@ function renderIndexCards() {
 }
 
 /**
- * 2. Render Master 20-Year Annual % Return Matrix for All 12 Passive Indexes
+ * 2. Render Master 20-Year Annual % Return Matrix for All 12 Passive Indexes (Sorted Descending)
  */
 function renderMasterMatrix() {
   const thead = document.getElementById("master-matrix-thead");
@@ -270,18 +311,20 @@ function renderMasterMatrix() {
 
   const yearHeaders = window.YEARS_20.map(yr => `<th class="py-2.5 px-2 text-right font-mono">${yr}</th>`).join("");
   thead.innerHTML = `
-    <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[210px]">Passive Tracker Index (UK)</th>
-    <th class="py-2.5 px-2.5 text-right bg-slate-800 text-emerald-300">20-Yr CAGR</th>
+    <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[235px]">Rank &amp; Passive Tracker Index (UK)</th>
+    <th class="py-2.5 px-2.5 text-right bg-slate-800 text-emerald-300">20-Yr CAGR ↓</th>
     <th class="py-2.5 px-2.5 text-right bg-slate-800">${formatGBP(state.lumpSum)} (20Y)</th>
     ${yearHeaders}
     <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300 font-mono">2026 YTD</th>
   `;
 
   const scaleFactor = state.lumpSum / 10000;
+  const sorted = getSortedIndexes();
 
-  tbody.innerHTML = window.UK_PASSIVE_INDEXES.map(idx => {
+  tbody.innerHTML = sorted.map((idx, pos) => {
     const isSelected = idx.id === state.selectedIndexId;
     const scaledPot = Math.round(idx.metrics.value10k * scaleFactor);
+    const rankNum = idx.returnRank || (pos + 1);
 
     const yearCells = window.YEARS_20.map(yr => {
       const val = idx.yearlyReturns[yr];
@@ -295,8 +338,13 @@ function renderMasterMatrix() {
       <tr onclick="selectIndex('${idx.id}', true)"
           class="cursor-pointer transition hover:bg-brand-50/50 ${isSelected ? "ring-2 ring-inset ring-brand-500 bg-brand-50/30" : ""}">
         <td class="py-2.5 px-3 font-bold text-slate-900 sticky-col sticky-col-shadow ${isSelected ? "bg-brand-50" : "bg-white"}">
-          <div class="flex items-center justify-between gap-1">
-            <span class="truncate">${idx.shortName}</span>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-extrabold ${
+                rankNum <= 3 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-700"
+              }">#${rankNum}</span>
+              <span class="truncate">${idx.shortName}</span>
+            </div>
             <span class="text-[10px] font-mono text-brand-600 shrink-0">${idx.lowestOcf.toFixed(2)}% OCF</span>
           </div>
         </td>
@@ -740,8 +788,9 @@ function renderAllIndexesCatalog() {
   if (!container) return;
 
   const scaleFactor = state.lumpSum / 10000;
+  const sorted = getSortedIndexes();
 
-  container.innerHTML = window.UK_PASSIVE_INDEXES.map((idx, idxNum) => {
+  container.innerHTML = sorted.map((idx, idxNum) => {
     const scaledIndexPot = Math.round(idx.metrics.value10k * scaleFactor);
 
     const yearHeaders = window.YEARS_20.map(yr => `<th class="py-1.5 px-1.5 text-right font-mono">${yr}</th>`).join("");

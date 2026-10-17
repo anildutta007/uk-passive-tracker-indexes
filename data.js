@@ -1289,13 +1289,20 @@ const UK_PASSIVE_INDEXES = RAW_INDEXES.map(idx => {
     };
   });
 
+  // Sort topFunds descending by 20-year CAGR
+  topFunds.sort((a, b) => b.metrics.cagr20 - a.metrics.cagr20);
+  topFunds.forEach((f, i) => { f.rank = i + 1; });
+
   return {
     ...idx,
     lowestOcf,
     metrics: indexMetrics,
     topFunds
   };
-});
+}).sort((a, b) => b.metrics.cagr20 - a.metrics.cagr20).map((idx, i) => ({
+  ...idx,
+  returnRank: i + 1
+}));
 
 window.YEARS_20 = YEARS_20;
 window.UK_PASSIVE_INDEXES = UK_PASSIVE_INDEXES;
