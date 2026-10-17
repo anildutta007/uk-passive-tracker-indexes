@@ -1,0 +1,92 @@
+/* UK Passive Tracker Indexes & Top 5 Outperforming Funds Explorer - Custom Styles */
+
+:root {
+  --brand-primary: #0284c7;
+  --brand-dark: #0f172a;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Custom Scrollbar for wide 20-year tables */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Sticky left column in 20-year horizontal tables */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+.sticky-col-shadow {
+  box-shadow: 4px 0 8px -4px rgba(15, 23, 42, 0.12);
+}
+
+/* Return Heatmap Pill Cells */
+.ret-pos-strong {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 700;
+}
+
+.ret-pos-mid {
+  background-color: #ecfdf5;
+  color: #047857;
+  font-weight: 600;
+}
+
+.ret-neg-mid {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.ret-neg-strong {
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+}
+
+/* Outperformance highlight badge */
+.beat-index-cell {
+  position: relative;
+}
+
+.beat-index-cell::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: #10b981;
+}
+
+/* Print optimization */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+  }
+}
