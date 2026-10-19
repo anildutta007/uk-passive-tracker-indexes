@@ -15,6 +15,7 @@ const state = {
   regionFilter: "All",   // "All" | "Global" | "US" | "UK" | "Other"
   sidebarSort: "period_desc",
   selectedOverlayFundRank: 1, // 0 for Index only, 1..5 for fund
+  fundDisplayLimit: 3,        // 3 by default, option to see 5
   top5ViewMode: "cards",      // "cards" | "table"
   accordionOpenRank: 1,       // #1 open by default
 
@@ -800,6 +801,29 @@ function renderTop5Section(idx = getSelectedIndex()) {
     };
   }
 
+  // Bind Top 3 / Top 5 Toggle
+  const btnTop3 = document.getElementById("fund-count-top3");
+  const btnTop5 = document.getElementById("fund-count-top5");
+  if (btnTop3 && btnTop5) {
+    btnTop3.onclick = () => {
+      state.fundDisplayLimit = 3;
+      btnTop3.classList.add("bg-slate-900", "text-white", "font-bold");
+      btnTop3.classList.remove("text-slate-600", "font-semibold");
+      btnTop5.classList.remove("bg-slate-900", "text-white", "font-bold");
+      btnTop5.classList.add("text-slate-600", "font-semibold");
+      renderTop5Section(idx);
+    };
+
+    btnTop5.onclick = () => {
+      state.fundDisplayLimit = 5;
+      btnTop5.classList.add("bg-slate-900", "text-white", "font-bold");
+      btnTop5.classList.remove("text-slate-600", "font-semibold");
+      btnTop3.classList.remove("bg-slate-900", "text-white", "font-bold");
+      btnTop3.classList.add("text-slate-600", "font-semibold");
+      renderTop5Section(idx);
+    };
+  }
+
   renderTop5Cards(idx);
   renderTop5Table(idx);
 }
@@ -811,7 +835,9 @@ function renderTop5Cards(idx) {
   const startYr = getStartYearForPeriod();
   const indexFinal = finalValue(idx.yearlyReturns, startYr, state.investAmount);
 
-  container.innerHTML = idx.topFunds.map(f => {
+  const displayedFunds = idx.topFunds.slice(0, state.fundDisplayLimit);
+
+  container.innerHTML = displayedFunds.map(f => {
     const isOpen = state.accordionOpenRank === f.rank;
     const color = SPEC_COLORS.funds[f.rank - 1];
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
@@ -936,7 +962,8 @@ function renderTop5Table(idx) {
     </tr>
   `;
 
-  const fundRows = idx.topFunds.map(f => {
+  const displayedFunds = idx.topFunds.slice(0, state.fundDisplayLimit);
+  const fundRows = displayedFunds.map(f => {
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
     const extraVsIndex = fundFinal - indexFinal;
     const color = SPEC_COLORS.funds[f.rank - 1];

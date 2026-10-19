@@ -55,24 +55,21 @@
     </div>
   </aside>
 
-  <!-- 3. Header + KPI Tiles (Dark Navy Gradient) -->
-  <header class="text-white py-6 px-4 sm:px-6 lg:px-8 border-b" style="background: var(--gradient-hero); border-color: var(--border);">
-    <div class="max-w-7xl mx-auto space-y-5">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <!-- 3. Header + KPI Tiles (Compact Dark Navy Gradient) -->
+  <header class="text-white py-3.5 px-4 sm:px-6 lg:px-8 border-b" style="background: var(--gradient-hero); border-color: var(--border);">
+    <div class="max-w-7xl mx-auto space-y-2.5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <div class="text-[11px] font-bold uppercase tracking-widest text-slate-300 font-mono">
+          <div class="text-[10px] font-bold uppercase tracking-widest text-slate-300 font-mono">
             ISA · SIPP · GIA Investable Universe (UK)
           </div>
-          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-serif-title mt-1 text-white">
-            UK Passive Tracker Indexes &amp; Top 5 Alpha Funds
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight font-serif-title text-white">
+            UK Passive Tracker Indexes &amp; Top Outperforming Alpha Funds
           </h1>
-          <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl">
-            Directory of UK-investable passive benchmark indexes, cheapest ISA/SIPP trackers, and the Top 5 funds achieving higher 20-year compounded growth.
-          </p>
         </div>
 
         <!-- Live Visitor Counter Badge -->
-        <div id="visitor-counter-badge" class="self-start sm:self-center inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-xs border border-white/15 text-xs text-white" title="Live visitors to explorer">
+        <div id="visitor-counter-badge" class="self-start sm:self-center inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15 text-xs text-white" title="Live visitors to explorer">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
@@ -83,34 +80,30 @@
         </div>
       </div>
 
-      <!-- 4 KPI Tiles Row -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-1">
-        <!-- Tile 1 -->
-        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
-          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">UK Investable Indexes</span>
-          <div class="text-xl sm:text-2xl font-black mt-1 text-white">15 Major Indexes</div>
-          <p class="text-[11px] text-slate-300 mt-0.5">US, Global, UK, India, China, LatAm, Europe &amp; Japan</p>
+      <!-- 4 KPI Tiles Row (Compact) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 pt-0.5">
+        <div class="bg-white/10 backdrop-blur-xs rounded-lg px-3 py-2 border border-white/15">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-slate-300 block font-mono">UK Investable Indexes</span>
+          <div class="text-base sm:text-lg font-black text-white">15 Major Indexes</div>
+          <p class="text-[10px] text-slate-300 truncate">US, Global, UK, India, China, LatAm, Europe</p>
         </div>
 
-        <!-- Tile 2 -->
-        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
-          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Highest 20-Yr Passive Index</span>
-          <div class="text-xl sm:text-2xl font-black text-emerald-300 mt-1 font-mono-num" id="kpi-best-index-cagr">19.27% p.a.</div>
-          <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="kpi-best-index-name">NASDAQ-100 Index (10Y: 21.6%) · £339,109 on £10k</p>
+        <div class="bg-white/10 backdrop-blur-xs rounded-lg px-3 py-2 border border-white/15">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Highest 20-Yr Passive Index</span>
+          <div class="text-base sm:text-lg font-black text-emerald-300 font-mono-num" id="kpi-best-index-cagr">19.27% p.a.</div>
+          <p class="text-[10px] text-slate-300 truncate" id="kpi-best-index-name">NASDAQ-100 Index · £339k on £10k</p>
         </div>
 
-        <!-- Tile 3 -->
-        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
-          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Outperforming Funds Analysed</span>
-          <div class="text-xl sm:text-2xl font-black text-amber-300 mt-1">75 Top Funds</div>
-          <p class="text-[11px] text-slate-300 mt-0.5">Top 5 index-beating funds per benchmark</p>
+        <div class="bg-white/10 backdrop-blur-xs rounded-lg px-3 py-2 border border-white/15">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Outperforming Funds Analysed</span>
+          <div class="text-base sm:text-lg font-black text-amber-300">75 Top Funds</div>
+          <p class="text-[10px] text-slate-300 truncate">Top index-beating funds per benchmark</p>
         </div>
 
-        <!-- Tile 4 -->
-        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
-          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Cheapest UK Tracker OCF</span>
-          <div class="text-xl sm:text-2xl font-black text-white mt-1 font-mono-num">0.03% – 0.32%</div>
-          <p class="text-[11px] text-slate-300 mt-0.5">Vanguard, iShares, Fidelity, HSBC, Franklin, LGIM</p>
+        <div class="bg-white/10 backdrop-blur-xs rounded-lg px-3 py-2 border border-white/15">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Cheapest UK Tracker OCF</span>
+          <div class="text-base sm:text-lg font-black text-white font-mono-num">0.03% – 0.32%</div>
+          <p class="text-[10px] text-slate-300 truncate">Vanguard, iShares, Fidelity, HSBC, LGIM</p>
         </div>
       </div>
     </div>
@@ -213,102 +206,80 @@
         <!-- 6.2 Detail Panel for Selected Index -->
         <div class="flex-1 w-full space-y-6 min-w-0">
           
-          <!-- Selected Index Header Card -->
-          <section class="spec-card p-5 space-y-4">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <span id="detail-category-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono" style="background: var(--muted); color: var(--fg);">Category</span>
-              <span id="detail-region-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono bg-slate-100 text-slate-600">Region</span>
-              <span id="detail-constituents-badge" class="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-100 text-slate-600">Constituents</span>
-              <span id="detail-currency-badge" class="px-2 py-0.5 text-[10px] font-mono rounded text-emerald-800 bg-emerald-50 border border-emerald-200">GBP (£ Total Return)</span>
+          <!-- Selected Index Header Card (Compact) -->
+          <section class="spec-card p-3.5 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span id="detail-category-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono" style="background: var(--muted); color: var(--fg);">Category</span>
+                <span id="detail-region-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono bg-slate-100 text-slate-600">Region</span>
+                <span id="detail-constituents-badge" class="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-100 text-slate-600">Constituents</span>
+                <span id="detail-currency-badge" class="px-2 py-0.5 text-[10px] font-mono rounded text-emerald-800 bg-emerald-50 border border-emerald-200">GBP (£ Total Return)</span>
+              </div>
             </div>
 
             <div>
-              <h2 id="detail-index-name" class="text-2xl sm:text-3xl font-extrabold font-serif-title text-slate-900 tracking-tight">Index Name</h2>
-              <p id="detail-index-desc" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Description...</p>
+              <h2 id="detail-index-name" class="text-xl sm:text-2xl font-extrabold font-serif-title text-slate-900 tracking-tight">Index Name</h2>
+              <p id="detail-index-desc" class="text-xs text-slate-600 mt-0.5 leading-relaxed">Description...</p>
             </div>
 
-            <!-- 4 Stat Tiles -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t" style="border-color: var(--border);">
-              <div class="p-3 rounded-lg" style="background: var(--muted);">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">20-Yr Annualised (CAGR)</span>
-                <span id="detail-tile-cagr20" class="text-lg sm:text-xl font-black font-mono-num text-emerald-700 block mt-0.5">19.27%</span>
-                <span class="text-[10px] text-slate-500 block">per year (2007–2026)</span>
+            <!-- 4 Stat Tiles (Compact) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 pt-1 border-t" style="border-color: var(--border);">
+              <div class="px-2.5 py-1.5 rounded-lg" style="background: var(--muted);">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block font-mono">20-Yr CAGR</span>
+                <span id="detail-tile-cagr20" class="text-base sm:text-lg font-black font-mono-num text-emerald-700 block">19.27%</span>
+                <span class="text-[9px] text-slate-500 block">per year (2007–2026)</span>
               </div>
 
-              <div class="p-3 rounded-lg" style="background: var(--muted);">
-                <span id="detail-tile-grew-label" class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">£10,000 grew to (20Y)</span>
-                <span id="detail-tile-grew-val" class="text-lg sm:text-xl font-black font-mono-num text-slate-900 block mt-0.5">£339,109</span>
-                <span id="detail-tile-cum-pct" class="text-[10px] text-emerald-600 font-semibold block">+3,291.1% cumulative</span>
+              <div class="px-2.5 py-1.5 rounded-lg" style="background: var(--muted);">
+                <span id="detail-tile-grew-label" class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block font-mono">£10,000 grew to (20Y)</span>
+                <span id="detail-tile-grew-val" class="text-base sm:text-lg font-black font-mono-num text-slate-900 block">£339,109</span>
+                <span id="detail-tile-cum-pct" class="text-[9px] text-emerald-600 font-semibold block">+3,291% cumulative</span>
               </div>
 
-              <div class="p-3 rounded-lg" style="background: var(--muted);">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">10Y / 5Y / 3Y / 2Y CAGR</span>
-                <span id="detail-tile-cagr-10-5" class="text-xs font-bold font-mono-num text-slate-800 block mt-0.5">21.58% · 17.15%</span>
-                <span id="detail-tile-cagr-3-2" class="text-[10px] text-slate-600 font-mono-num block mt-0.5">3Y: 25.58% · 2Y: 24.10%</span>
+              <div class="px-2.5 py-1.5 rounded-lg" style="background: var(--muted);">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block font-mono">10Y / 5Y / 3Y / 2Y</span>
+                <span id="detail-tile-cagr-10-5" class="text-xs font-bold font-mono-num text-slate-800 block">21.58% · 17.15%</span>
+                <span id="detail-tile-cagr-3-2" class="text-[9px] text-slate-600 font-mono-num block">3Y: 25.58% · 2Y: 24.10%</span>
               </div>
 
-              <div class="p-3 rounded-lg" style="background: var(--muted);">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">Positive Calendar Years</span>
-                <span id="detail-tile-pos-years" class="text-lg sm:text-xl font-black font-mono-num text-slate-900 block mt-0.5">18 / 20</span>
-                <span id="detail-tile-pos-sub" class="text-[10px] text-slate-500 block truncate" title="90% · best 2023 +46.4% · worst 2022 -23.9%">90% · best +46.4% · worst -23.9%</span>
+              <div class="px-2.5 py-1.5 rounded-lg" style="background: var(--muted);">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block font-mono">Positive Years</span>
+                <span id="detail-tile-pos-years" class="text-base sm:text-lg font-black font-mono-num text-slate-900 block">18 / 20</span>
+                <span id="detail-tile-pos-sub" class="text-[9px] text-slate-500 block truncate" title="90% · best 2023 +46.4% · worst 2022 -23.9%">90% · best +46.4% · worst -23.9%</span>
               </div>
             </div>
           </section>
 
-          <!-- 6.3 How to Invest in This Index in the UK -->
-          <section class="spec-card p-5 space-y-3">
-            <div>
-              <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
-                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
-                <span>How to invest in this index in the UK</span>
-              </h3>
-              <p class="text-xs text-slate-500 mt-0.5">
-                Cheapest ISA / SIPP passive tracker funds &amp; ETFs · Available on Vanguard, Hargreaves Lansdown, Interactive Investor, AJ Bell, Fidelity &amp; Trading 212
-              </p>
-            </div>
-
-            <!-- 3 Tracker Cards -->
-            <div id="detail-tracker-cards" class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <!-- Populated by app.js -->
-            </div>
-          </section>
-
-          <!-- 6.4 Charts (Bar Chart + Growth Line Chart) -->
-          <section class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <!-- 6.4 Charts (Bar Chart + Growth Line Chart: Compact Height) -->
+          <section class="grid grid-cols-1 xl:grid-cols-2 gap-3.5">
             <!-- Chart A: Annual % returns, 2007–2026 -->
-            <div class="spec-card p-4 flex flex-col justify-between">
+            <div class="spec-card p-3 flex flex-col justify-between">
               <div>
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <div>
-                    <h3 class="text-sm font-extrabold text-slate-900">Annual % returns (2007–2026)</h3>
-                    <p class="text-xs text-slate-500">Calendar year total return in GBP</p>
-                  </div>
+                <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                  <h3 class="text-xs font-extrabold text-slate-900">Annual % returns (2007–2026)</h3>
                 </div>
 
                 <!-- Overlay Chips Row -->
-                <div id="bar-chart-overlay-chips" class="flex flex-wrap gap-1 mb-3">
+                <div id="bar-chart-overlay-chips" class="flex flex-wrap gap-1 mb-1.5">
                   <!-- Populated by app.js -->
                 </div>
               </div>
 
-              <div class="relative h-64 sm:h-72 w-full">
+              <div class="relative h-44 sm:h-48 w-full">
                 <canvas id="yearlyBarChart"></canvas>
               </div>
             </div>
 
             <!-- Chart B: Compounded Growth Line Chart -->
-            <div class="spec-card p-4 flex flex-col justify-between">
+            <div class="spec-card p-3 flex flex-col justify-between">
               <div>
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
-                  <h3 id="growth-chart-title" class="text-sm font-extrabold text-slate-900">£10,000 compounded growth (20Y)</h3>
-                  <span class="text-[10px] font-mono text-slate-400">Dividends reinvested, GBP</span>
+                <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
+                  <h3 id="growth-chart-title" class="text-xs font-extrabold text-slate-900">£10,000 compounded growth (20Y)</h3>
+                  <span class="text-[9px] font-mono text-slate-400">Dividends reinvested, GBP</span>
                 </div>
-                <p class="text-xs text-slate-500 mb-3">
-                  Index (dashed) vs Top 5 funds · click legend to toggle lines
-                </p>
               </div>
 
-              <div class="relative h-64 sm:h-72 w-full">
+              <div class="relative h-44 sm:h-48 w-full">
                 <canvas id="growthChart"></canvas>
               </div>
             </div>
@@ -333,10 +304,19 @@
                 </div>
               </div>
 
-              <!-- View Toggle: Cards | Table -->
-              <div class="inline-flex rounded-lg p-0.5 border self-start sm:self-auto bg-white" style="border-color: var(--border);">
-                <button id="view-toggle-cards" type="button" class="view-btn active px-3 py-1 text-xs font-bold rounded-md bg-slate-900 text-white transition cursor-pointer">Cards</button>
-                <button id="view-toggle-table" type="button" class="view-btn px-3 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition cursor-pointer">Table</button>
+              <!-- Controls: Count Toggle (Top 3 | Top 5) + View Toggle (Cards | Table) -->
+              <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                <!-- Top 3 / Top 5 Toggle -->
+                <div class="inline-flex rounded-lg p-0.5 border bg-white" style="border-color: var(--border);">
+                  <button id="fund-count-top3" type="button" class="fund-count-btn active px-2.5 py-1 text-xs font-bold rounded-md bg-slate-900 text-white transition cursor-pointer">Top 3</button>
+                  <button id="fund-count-top5" type="button" class="fund-count-btn px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition cursor-pointer">Top 5</button>
+                </div>
+
+                <!-- View Toggle: Cards | Table -->
+                <div class="inline-flex rounded-lg p-0.5 border bg-white" style="border-color: var(--border);">
+                  <button id="view-toggle-cards" type="button" class="view-btn active px-2.5 py-1 text-xs font-bold rounded-md bg-slate-900 text-white transition cursor-pointer">Cards</button>
+                  <button id="view-toggle-table" type="button" class="view-btn px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition cursor-pointer">Table</button>
+                </div>
               </div>
             </div>
 
