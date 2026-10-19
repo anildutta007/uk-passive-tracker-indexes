@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.UK_PASSIVE_INDEXES && window.UK_PASSIVE_INDEXES.length > 0) {
     state.selectedIndexId = window.UK_PASSIVE_INDEXES[0].id;
   }
+  initVisitorCounter();
   initTopKPIs();
   bindEvents();
   renderAll();
@@ -35,6 +36,49 @@ document.addEventListener("DOMContentLoaded", () => {
     window.lucide.createIcons();
   }
 });
+
+/**
+ * Live Visitor Counter (Real Organic Session Tracking + Remote VisitorBadge Sync)
+ */
+function initVisitorCounter() {
+  const countDisplay = document.getElementById("visitor-count-number");
+  if (!countDisplay) return;
+
+  let totalVisits = parseInt(localStorage.getItem("uk_passive_trackers_real_visits"), 10);
+  if (isNaN(totalVisits) || totalVisits < 1) {
+    totalVisits = 1;
+  }
+
+  const isCountedSession = sessionStorage.getItem("uk_passive_trackers_session_counted");
+  if (!isCountedSession) {
+    totalVisits += 1;
+    localStorage.setItem("uk_passive_trackers_real_visits", totalVisits.toString());
+    sessionStorage.setItem("uk_passive_trackers_session_counted", "true");
+  }
+
+  countDisplay.textContent = totalVisits.toLocaleString("en-GB");
+
+  // Sync with remote visitor counter across all global visitors
+  fetch("https://api.visitorbadge.io/api/visitors?path=anildutta007-uk-passive-tracker-indexes")
+    .then(res => res.text())
+    .then(svgText => {
+      const match =
+        svgText.match(/<text[^>]*font-weight="bold"[^>]*>(\d+)<\/text>/i) ||
+        svgText.match(/<title>VISITORS:\s*(\d+)<\/title>/i) ||
+        svgText.match(/aria-label="VISITORS:\s*(\d+)"/i);
+      if (match && match[1]) {
+        const remoteHits = parseInt(match[1], 10);
+        if (!isNaN(remoteHits) && remoteHits > totalVisits) {
+          totalVisits = remoteHits;
+          localStorage.setItem("uk_passive_trackers_real_visits", totalVisits.toString());
+          countDisplay.textContent = totalVisits.toLocaleString("en-GB");
+        }
+      }
+    })
+    .catch(() => {
+      // Fallback to local session count if offline or blocked by adblocker
+    });
+}
 
 function getSortedIndexes() {
   const list = [...window.UK_PASSIVE_INDEXES];
