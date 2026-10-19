@@ -68,8 +68,15 @@
           </h1>
         </div>
 
-        <!-- Top Right: Developer Badge + Live Visitor Counter Badge -->
+        <!-- Top Right: Developer Badge + Platform Advisor + Live Visitor Counter Badge -->
         <div class="flex items-center gap-2 flex-wrap self-start sm:self-center">
+          <a href="https://uk-platform-advisor.vercel.app/" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/35 text-xs text-white font-semibold transition"
+             title="UK Investment Platform Advisor: Compare ISA, SIPP & GIA fees across Vanguard, AJ Bell, HL, Fidelity & Interactive Investor">
+            <i data-lucide="scale" class="w-3.5 h-3.5 text-emerald-300"></i>
+            <span>Platform Advisor ↗</span>
+          </a>
+
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15 text-xs text-white" title="Developer Contact">
             <i data-lucide="code-2" class="w-3.5 h-3.5 text-cyan-300"></i>
             <span class="text-slate-300 text-[11px]">Developer:</span>
@@ -146,6 +153,13 @@
           <span class="hidden md:inline text-[11px] text-slate-500">All £ values and charts update live.</span>
         </div>
 
+        <a href="https://uk-platform-advisor.vercel.app/" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-lg border bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 transition shadow-2xs" 
+           title="Compare UK platform fees across Vanguard, AJ Bell, Hargreaves Lansdown, Fidelity & Interactive Investor">
+          <i data-lucide="scale" class="w-3.5 h-3.5 text-emerald-700"></i>
+          <span>Platform Advisor ↗</span>
+        </a>
+
         <button id="btn-export-csv" type="button" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border bg-white hover:bg-slate-50 text-slate-700 transition cursor-pointer" style="border-color: var(--border);">
           <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
           <span>Export CSV</span>
@@ -157,15 +171,27 @@
   <!-- 5. Main Content with Tabs (Explore one index | Compare all 15) -->
   <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 space-y-4">
     <!-- Tab Navigation -->
-    <div class="flex items-center border-b no-print" style="border-color: var(--border);">
-      <button id="tab-btn-explore" type="button" class="tab-btn active px-4 py-2.5 text-sm font-bold border-b-2 -mb-px flex items-center gap-2 cursor-pointer transition" style="border-color: var(--primary); color: var(--primary);">
-        <i data-lucide="layout-grid" class="w-4 h-4"></i>
-        <span>Explore one index</span>
-      </button>
-      <button id="tab-btn-compare" type="button" class="tab-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px border-transparent text-slate-500 hover:text-slate-900 flex items-center gap-2 cursor-pointer transition">
-        <i data-lucide="git-compare" class="w-4 h-4"></i>
-        <span>Compare all 15</span>
-      </button>
+    <div class="flex items-center justify-between border-b no-print" style="border-color: var(--border);">
+      <div class="flex items-center">
+        <button id="tab-btn-explore" type="button" class="tab-btn active px-4 py-2.5 text-sm font-bold border-b-2 -mb-px flex items-center gap-2 cursor-pointer transition" style="border-color: var(--primary); color: var(--primary);">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <span>Explore one index</span>
+        </button>
+        <button id="tab-btn-compare" type="button" class="tab-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px border-transparent text-slate-500 hover:text-slate-900 flex items-center gap-2 cursor-pointer transition">
+          <i data-lucide="git-compare" class="w-4 h-4"></i>
+          <span>Compare all 15</span>
+        </button>
+      </div>
+
+      <div class="hidden md:flex items-center gap-1.5 pb-1">
+        <span class="text-xs text-slate-500">Unsure which broker to use?</span>
+        <a href="https://uk-platform-advisor.vercel.app/" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 hover:text-indigo-900 underline"
+           title="UK Investment Platform Advisor: Compare ISA, SIPP & GIA fees across Vanguard, AJ Bell, HL, Fidelity & Interactive Investor">
+          <span>UK Investment Platform Advisor</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
     </div>
 
     <!-- ================= TAB 1: EXPLORE ONE INDEX (SIDEBAR + DETAIL) ================= -->
@@ -431,12 +457,18 @@
 
   <!-- Footer -->
   <footer class="border-t py-6 text-xs text-slate-500 mt-8" style="background-color: var(--card); border-color: var(--border);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3">
       <div>
         <strong class="text-slate-800">UK Passive Tracker Indexes &amp; Top 5 Outperforming Funds Explorer</strong> • Developer: <a href="mailto:anildutta007@gmail.com" class="font-semibold text-slate-800 hover:text-indigo-600 underline">Anil Dutta (anildutta007@gmail.com)</a>
       </div>
-      <div class="text-slate-400">
-        Data calibrated in GBP (£) Total Return net of OCF • Strictly for educational &amp; research use
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-slate-500 text-center sm:text-right">
+        <div>
+          Companion Tool: <a href="https://uk-platform-advisor.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 underline font-semibold">UK Investment Platform Advisor | ISA, SIPP &amp; GIA Fee Comparison Engine ↗</a>
+        </div>
+        <span class="hidden sm:inline text-slate-300">•</span>
+        <div class="text-slate-400">
+          Strictly for educational &amp; research use
+        </div>
       </div>
     </div>
   </footer>
