@@ -1,5 +1,5 @@
 /**
- * UK Passive Tracker Indexes & Top 5 Outperforming Funds Explorer
+ * UK Passive Tracker Indexes & Top 5 Outperforming Funds Explorer (2007–2026 Full 20-Year Window)
  * Client-Side Application Logic
  */
 
@@ -8,7 +8,7 @@ const state = {
   regionFilter: "ALL",
   sortBy: "cagr20_desc",
   lumpSum: 10000,
-  compareFundRank: 1, // "ALL" or 1..5
+  compareFundRank: 1, // "NONE" or 1..5
   showMasterMatrix: true,
   showAllCatalogMode: false
 };
@@ -88,7 +88,7 @@ function getSortedIndexes() {
     case "cagr5_desc":
       return list.sort((a, b) => b.metrics.cagr5 - a.metrics.cagr5);
     case "ytd_desc":
-      return list.sort((a, b) => (b.yearlyReturns["2026 YTD"] || 0) - (a.yearlyReturns["2026 YTD"] || 0));
+      return list.sort((a, b) => (b.yearlyReturns["2026"] || 0) - (a.yearlyReturns["2026"] || 0));
     case "ocf_asc":
       return list.sort((a, b) => a.lowestOcf - b.lowestOcf || b.metrics.cagr20 - a.metrics.cagr20);
     case "cagr20_desc":
@@ -103,8 +103,8 @@ function initTopKPIs() {
     const top = sortedByCagr[0];
     const cagrEl = document.getElementById("kpi-best-index-cagr");
     const nameEl = document.getElementById("kpi-best-index-name");
-    if (cagrEl) cagrEl.textContent = `${top.metrics.cagr20.toFixed(2)}% p.a.`;
-    if (nameEl) nameEl.textContent = `${top.name} (£${(top.metrics.value10k / 1000).toFixed(1)}k on £10k)`;
+    if (cagrEl) cagrEl.textContent = `${top.metrics.cagr20.toFixed(2)}% p.a. (10Y: ${top.metrics.cagr10.toFixed(1)}%)`;
+    if (nameEl) nameEl.textContent = `${top.name} (£${(top.metrics.value10k / 1000).toFixed(0)}k on £10k)`;
   }
 }
 
@@ -160,7 +160,6 @@ function bindEvents() {
         }
       }
     });
-    // Set initial label
     const label = document.getElementById("master-matrix-btn-text");
     if (label) label.textContent = "Hide All 15 Indexes 20-Yr Matrix";
   }
@@ -175,7 +174,7 @@ function bindEvents() {
     });
   }
 
-  // Toggle Full 12-Index Report Mode
+  // Toggle Full 15-Index Report Mode
   const btnToggleCatalog = document.getElementById("btn-toggle-all-catalog");
   const btnCloseCatalog = document.getElementById("btn-close-all-catalog");
   if (btnToggleCatalog) {
@@ -264,7 +263,7 @@ function renderAll() {
 }
 
 /**
- * 1. Render the 12 UK Passive Tracker Index Cards (Sorted Descending by Return)
+ * 1. Render the 15 UK Passive Tracker Index Cards (Sorted Descending by Return)
  */
 function renderIndexCards() {
   const grid = document.getElementById("index-cards-grid");
@@ -299,7 +298,7 @@ function renderIndexCards() {
             <div class="flex items-center gap-1.5">
               <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black ${
                 rankNum <= 3 ? "bg-emerald-600 text-white" : "bg-slate-800 text-white"
-              }" title="20-Year Return Rank #${rankNum} of 12">
+              }" title="20-Year Return Rank #${rankNum} of 15">
                 #${rankNum}
               </span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
@@ -321,23 +320,27 @@ function renderIndexCards() {
           </p>
         </div>
 
-        <div class="mt-3 pt-2.5 border-t border-slate-100 grid grid-cols-2 gap-2">
+        <div class="mt-3 pt-2.5 border-t border-slate-100 grid grid-cols-3 gap-1.5">
           <div>
-            <span class="text-[10px] uppercase tracking-wider text-slate-400 block">20-Yr Annualised</span>
-            <span class="text-base font-black text-emerald-600 font-mono">${idx.metrics.cagr20.toFixed(2)}% <span class="text-[10px] font-normal text-slate-500">p.a.</span></span>
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 block">20Y CAGR</span>
+            <span class="text-sm font-black text-emerald-600 font-mono">${idx.metrics.cagr20.toFixed(2)}%</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 block">10Y CAGR</span>
+            <span class="text-sm font-extrabold text-brand-700 font-mono">${idx.metrics.cagr10.toFixed(2)}%</span>
           </div>
           <div class="text-right">
-            <span class="text-[10px] uppercase tracking-wider text-slate-400 block">${formatGBP(state.lumpSum)} → 20 Yrs</span>
-            <span class="text-sm font-extrabold text-slate-900 font-mono">${formatGBP(scaledPot)}</span>
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 block">${formatGBP(state.lumpSum)} (20Y)</span>
+            <span class="text-xs font-extrabold text-slate-900 font-mono">${formatGBP(scaledPot)}</span>
           </div>
         </div>
 
         <div class="mt-2 pt-2 border-t border-slate-100/80 flex items-center justify-between text-[11px]">
-          <span class="text-slate-500 font-medium truncate max-w-[72%]" title="#1 Outperforming Fund: ${topFund.name}">
+          <span class="text-slate-500 font-medium truncate max-w-[65%]" title="#1 Outperforming Fund: ${topFund.name}">
             <strong class="text-indigo-600">#1 Beat:</strong> ${topFund.name}
           </span>
-          <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
-            ${topFund.metrics.cagr20.toFixed(1)}%
+          <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded" title="20Y: ${topFund.metrics.cagr20.toFixed(1)}% | 10Y: ${topFund.metrics.cagr10.toFixed(1)}%">
+            20Y: ${topFund.metrics.cagr20.toFixed(1)}% | 10Y: ${topFund.metrics.cagr10.toFixed(1)}%
           </span>
         </div>
       </div>
@@ -346,20 +349,20 @@ function renderIndexCards() {
 }
 
 /**
- * 2. Render Master 20-Year Annual % Return Matrix for All 12 Passive Indexes (Sorted Descending)
+ * 2. Render Master 20-Year Annual % Return Matrix for All 15 Passive Indexes (2007–2026)
  */
 function renderMasterMatrix() {
   const thead = document.getElementById("master-matrix-thead");
   const tbody = document.getElementById("master-matrix-tbody");
   if (!thead || !tbody) return;
 
-  const yearHeaders = window.YEARS_20.map(yr => `<th class="py-2.5 px-2 text-right font-mono">${yr}</th>`).join("");
+  const yearHeaders = window.YEARS_20.map(yr => `<th class="py-2.5 px-2 text-right font-mono ${yr === '2026' ? 'bg-slate-800 text-amber-300' : ''}">${yr}</th>`).join("");
   thead.innerHTML = `
     <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[235px]">Rank &amp; Passive Tracker Index (UK)</th>
-    <th class="py-2.5 px-2.5 text-right bg-slate-800 text-emerald-300">20-Yr CAGR ↓</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-emerald-300">20Y CAGR ↓</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-cyan-300">10Y CAGR</th>
     <th class="py-2.5 px-2.5 text-right bg-slate-800">${formatGBP(state.lumpSum)} (20Y)</th>
     ${yearHeaders}
-    <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300 font-mono">2026 YTD</th>
   `;
 
   const scaleFactor = state.lumpSum / 10000;
@@ -376,8 +379,6 @@ function renderMasterMatrix() {
       return `<td class="py-2 px-1.5 text-right font-mono text-[11px] ${cls}">${formatPct(val)}</td>`;
     }).join("");
 
-    const ytdVal = idx.yearlyReturns["2026 YTD"];
-
     return `
       <tr onclick="selectIndex('${idx.id}', true)"
           class="cursor-pointer transition hover:bg-brand-50/50 ${isSelected ? "ring-2 ring-inset ring-brand-500 bg-brand-50/30" : ""}">
@@ -392,16 +393,16 @@ function renderMasterMatrix() {
             <span class="text-[10px] font-mono text-brand-600 shrink-0">${idx.lowestOcf.toFixed(2)}% OCF</span>
           </div>
         </td>
-        <td class="py-2 px-2.5 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/60">
+        <td class="py-2 px-2 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/60">
           ${idx.metrics.cagr20.toFixed(2)}%
+        </td>
+        <td class="py-2 px-2 text-right font-mono font-bold text-brand-700 bg-brand-50/50">
+          ${idx.metrics.cagr10.toFixed(2)}%
         </td>
         <td class="py-2 px-2.5 text-right font-mono font-bold text-slate-900 bg-slate-50">
           ${formatGBP(scaledPot)}
         </td>
         ${yearCells}
-        <td class="py-2 px-2 text-right font-mono font-bold text-brand-700 bg-brand-50/40">
-          ${formatPct(ytdVal)}
-        </td>
       </tr>
     `;
   }).join("");
@@ -454,14 +455,14 @@ function renderSelectedIndexDetail(idx) {
   const compareSelect = document.getElementById("chart-compare-fund-select");
   if (compareSelect) {
     compareSelect.innerHTML = [
-      ...idx.topFunds.map(f => `<option value="${f.rank}" ${state.compareFundRank === f.rank ? "selected" : ""}>#${f.rank}: ${f.name} (${f.metrics.cagr20.toFixed(2)}% p.a.)</option>`),
+      ...idx.topFunds.map(f => `<option value="${f.rank}" ${state.compareFundRank === f.rank ? "selected" : ""}>#${f.rank}: ${f.name} (20Y: ${f.metrics.cagr20.toFixed(1)}% | 10Y: ${f.metrics.cagr10.toFixed(1)}%)</option>`),
       `<option value="NONE" ${state.compareFundRank === "NONE" ? "selected" : ""}>Show Passive Index Only</option>`
     ].join("");
   }
 
   // Render Top 5 Outperforming Funds Section
   document.getElementById("top5-heading-index-name").textContent = idx.name;
-  document.getElementById("top5-benchmark-cagr-badge").textContent = `${idx.metrics.cagr20.toFixed(2)}% p.a.`;
+  document.getElementById("top5-benchmark-cagr-badge").textContent = `20Y: ${idx.metrics.cagr20.toFixed(2)}% p.a. | 10Y: ${idx.metrics.cagr10.toFixed(2)}% p.a.`;
   document.getElementById("th-lump-sum-col").textContent = `${formatGBP(state.lumpSum)} Value (20 Yrs)`;
 
   renderTop5FundCards(idx, scaleFactor, scaledIndexPot);
@@ -471,7 +472,7 @@ function renderSelectedIndexDetail(idx) {
 }
 
 /**
- * Render Top 5 Outperforming Funds Cards
+ * Render Top 5 Outperforming Funds Cards (Showing both 20-Yr CAGR and 10-Yr CAGR incl. 2026)
  */
 function renderTop5FundCards(idx, scaleFactor, scaledIndexPot) {
   const container = document.getElementById("top5-funds-cards");
@@ -505,17 +506,26 @@ function renderTop5FundCards(idx, scaleFactor, scaledIndexPot) {
             ${f.house} • <span class="text-indigo-600">${f.vehicleType}</span>
           </div>
 
-          <!-- Key Metrics Box -->
-          <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 grid grid-cols-2 gap-2">
-            <div>
-              <span class="text-[10px] uppercase text-slate-400 font-bold block">20-Yr CAGR</span>
-              <span class="text-base font-black text-slate-900 font-mono">${f.metrics.cagr20.toFixed(2)}%</span>
-              <span class="text-[10px] text-emerald-600 font-semibold block">vs ${idx.metrics.cagr20.toFixed(2)}% Index</span>
+          <!-- Key Metrics Box (20-Yr CAGR, 10-Yr CAGR & 20-Yr Compounded Pot) -->
+          <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 space-y-2">
+            <div class="grid grid-cols-2 gap-2 pb-2 border-b border-slate-200/70">
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 font-bold block">20-Yr CAGR (07–26)</span>
+                <span class="text-base font-black text-slate-900 font-mono">${f.metrics.cagr20.toFixed(2)}%</span>
+                <span class="text-[10px] text-emerald-600 font-semibold block">vs ${idx.metrics.cagr20.toFixed(2)}% Index</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] uppercase text-indigo-500 font-bold block">10-Yr CAGR (17–26)</span>
+                <span class="text-base font-black text-indigo-700 font-mono">${f.metrics.cagr10.toFixed(2)}%</span>
+                <span class="text-[10px] text-indigo-600 font-semibold block">vs ${idx.metrics.cagr10.toFixed(2)}% Index</span>
+              </div>
             </div>
-            <div class="text-right">
-              <span class="text-[10px] uppercase text-slate-400 font-bold block">${formatGBP(state.lumpSum)} → 20Y</span>
-              <span class="text-sm font-black text-emerald-700 font-mono">${formatGBP(scaledFundPot)}</span>
-              <span class="text-[10px] text-emerald-600 font-bold block">+${formatGBP(scaledExtra)} extra</span>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] uppercase text-slate-500 font-bold">${formatGBP(state.lumpSum)} → 20Y:</span>
+              <div class="text-right">
+                <span class="text-xs font-black text-emerald-700 font-mono">${formatGBP(scaledFundPot)}</span>
+                <span class="text-[10px] text-emerald-600 font-bold ml-1">(+${formatGBP(scaledExtra)})</span>
+              </div>
             </div>
           </div>
 
@@ -561,7 +571,7 @@ function renderTop5ComparisonTable(idx, scaleFactor, scaledIndexPot) {
       <td class="py-2.5 px-3 text-right font-mono text-emerald-300">${idx.lowestOcf.toFixed(2)}%</td>
       <td class="py-2.5 px-3 text-right font-mono text-base text-white">${idx.metrics.cagr20.toFixed(2)}%</td>
       <td class="py-2.5 px-3 text-right font-mono text-slate-400">Baseline (0.00%)</td>
-      <td class="py-2.5 px-3 text-right font-mono text-slate-200">${idx.metrics.cagr10.toFixed(2)}%</td>
+      <td class="py-2.5 px-3 text-right font-mono text-cyan-300 text-sm">${idx.metrics.cagr10.toFixed(2)}%</td>
       <td class="py-2.5 px-3 text-right font-mono text-amber-300">${formatGBP(scaledIndexPot)}</td>
       <td class="py-2.5 px-3 text-right font-mono text-slate-400">—</td>
       <td class="py-2.5 px-3 text-center font-mono text-slate-300">Benchmark</td>
@@ -593,7 +603,7 @@ function renderTop5ComparisonTable(idx, scaleFactor, scaledIndexPot) {
         <td class="py-2.5 px-3 text-right font-mono text-slate-700">${f.ocf.toFixed(2)}%</td>
         <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-700 text-sm bg-emerald-50/50">${f.metrics.cagr20.toFixed(2)}%</td>
         <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-600">+${f.alphaAnnual.toFixed(2)}% p.a.</td>
-        <td class="py-2.5 px-3 text-right font-mono font-semibold text-slate-800">${f.metrics.cagr10.toFixed(2)}%</td>
+        <td class="py-2.5 px-3 text-right font-mono font-extrabold text-indigo-700 bg-indigo-50/40 text-sm">${f.metrics.cagr10.toFixed(2)}%</td>
         <td class="py-2.5 px-3 text-right font-mono font-extrabold text-slate-900">${formatGBP(scaledFundPot)}</td>
         <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-700">+${formatGBP(scaledExtra)}</td>
         <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-700">${f.yearsBeatIndex} / 20</td>
@@ -605,7 +615,7 @@ function renderTop5ComparisonTable(idx, scaleFactor, scaledIndexPot) {
 }
 
 /**
- * 4. Render 20-Year Year-by-Year Annual % Return Table (Selected Index vs Top 5 Funds)
+ * 4. Render 20-Year Year-by-Year Annual % Return Table (2007–2026: Selected Index vs Top 5 Funds)
  */
 function renderIndexVsTop5YearlyTable(idx) {
   document.getElementById("yearly-table-index-name").textContent = idx.name;
@@ -613,13 +623,13 @@ function renderIndexVsTop5YearlyTable(idx) {
   const tbody = document.getElementById("detail-yearly-tbody");
   if (!thead || !tbody) return;
 
-  const yearHeaders = window.YEARS_20.map(yr => `<th class="py-2.5 px-2 text-right font-mono">${yr}</th>`).join("");
+  const yearHeaders = window.YEARS_20.map(yr => `<th class="py-2.5 px-2 text-right font-mono ${yr === '2026' ? 'bg-slate-800 text-amber-300' : ''}">${yr}</th>`).join("");
   thead.innerHTML = `
     <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[235px]">Index / Outperforming Fund</th>
-    <th class="py-2.5 px-2.5 text-right bg-slate-800 text-emerald-300">20-Yr CAGR</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-emerald-300">20Y CAGR</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-cyan-300">10Y CAGR</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300">Alpha</th>
     ${yearHeaders}
-    <th class="py-2.5 px-2 text-right bg-slate-800 text-cyan-300 font-mono">2026 YTD</th>
   `;
 
   // Row 1: Passive Benchmark Index
@@ -636,10 +646,10 @@ function renderIndexVsTop5YearlyTable(idx) {
           <span class="truncate">${idx.name}</span>
         </div>
       </td>
-      <td class="py-2.5 px-2.5 text-right font-mono font-black text-emerald-300 bg-slate-800">${idx.metrics.cagr20.toFixed(2)}%</td>
+      <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 bg-slate-800">${idx.metrics.cagr20.toFixed(2)}%</td>
+      <td class="py-2.5 px-2 text-right font-mono font-bold text-cyan-300 bg-slate-800">${idx.metrics.cagr10.toFixed(2)}%</td>
       <td class="py-2.5 px-2 text-right font-mono text-slate-400 bg-slate-800">Base</td>
       ${indexYearCells}
-      <td class="py-2.5 px-2 text-right font-mono font-bold text-cyan-300 bg-slate-800">${formatPct(idx.yearlyReturns["2026 YTD"])}</td>
     </tr>
   `;
 
@@ -663,10 +673,10 @@ function renderIndexVsTop5YearlyTable(idx) {
             <span class="truncate" title="${f.name}">${f.name}</span>
           </div>
         </td>
-        <td class="py-2 px-2.5 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/60">${f.metrics.cagr20.toFixed(2)}%</td>
-        <td class="py-2 px-2 text-right font-mono font-bold text-indigo-700 bg-indigo-50/50">+${f.alphaAnnual.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/60">${f.metrics.cagr20.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-extrabold text-indigo-700 bg-indigo-50/50">${f.metrics.cagr10.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-bold text-emerald-700 bg-emerald-50/40">+${f.alphaAnnual.toFixed(2)}%</td>
         ${cells}
-        <td class="py-2 px-2 text-right font-mono font-bold text-brand-700 bg-brand-50/40">${formatPct(f.yearlyReturns["2026 YTD"])}</td>
       </tr>
     `;
   }).join("");
@@ -675,12 +685,12 @@ function renderIndexVsTop5YearlyTable(idx) {
 }
 
 /**
- * 5. Render Chart.js Visualisations (Yearly % Bar Chart + 20-Yr Cumulative Compounded Growth Chart)
+ * 5. Render Chart.js Visualisations (Yearly % Bar Chart + 20-Yr Cumulative Compounded Growth Chart 2007–2026)
  */
 function renderCharts(idx) {
   if (typeof Chart === "undefined") return;
 
-  const labels = [...window.YEARS_20, "2026 YTD"];
+  const labels = [...window.YEARS_20];
   const indexData = labels.map(yr => idx.yearlyReturns[yr]);
 
   // --- Chart 1: Yearly % Bar Chart ---
@@ -744,17 +754,17 @@ function renderCharts(idx) {
     });
   }
 
-  // --- Chart 2: Cumulative £ Growth Line Chart (2006–2025) ---
+  // --- Chart 2: Cumulative £ Growth Line Chart (2007–2026) ---
   const lineCtx = document.getElementById("cumulativeLineChart");
   const cumTitleEl = document.getElementById("cum-chart-title");
   if (cumTitleEl) {
-    cumTitleEl.textContent = `${formatGBP(state.lumpSum)} Compounded Growth Over 20 Years (2006–2025)`;
+    cumTitleEl.textContent = `${formatGBP(state.lumpSum)} Compounded Growth Over 20 Years (2007–2026)`;
   }
 
   if (lineCtx) {
     if (cumulativeLineChartInstance) cumulativeLineChartInstance.destroy();
 
-    const lineLabels = ["Start (2006)", ...window.YEARS_20];
+    const lineLabels = ["Start (2007)", ...window.YEARS_20];
 
     const buildCumulativeSeries = (returnsObj) => {
       let current = state.lumpSum;
@@ -825,7 +835,7 @@ function renderCharts(idx) {
 }
 
 /**
- * 6. Render Complete All-12-Index & 60-Fund Catalog Report View
+ * 6. Render Complete All-15-Index & 75-Fund Catalog Report View
  */
 function renderAllIndexesCatalog() {
   const container = document.getElementById("all-indexes-catalog-list");
@@ -854,6 +864,7 @@ function renderAllIndexesCatalog() {
           <td class="py-2 px-3 font-mono text-slate-600">${f.ticker}</td>
           <td class="py-2 px-3 text-right font-mono">${f.ocf.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-extrabold text-emerald-700">${f.metrics.cagr20.toFixed(2)}%</td>
+          <td class="py-2 px-3 text-right font-mono font-extrabold text-indigo-700">${f.metrics.cagr10.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">+${f.alphaAnnual.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-bold text-slate-900">${formatGBP(scaledFundPot)}</td>
           <td class="py-2 px-3 text-right font-mono font-semibold text-emerald-700">+${formatGBP(scaledExtra)}</td>
@@ -871,8 +882,8 @@ function renderAllIndexesCatalog() {
           </div>
           <div class="flex items-center gap-4">
             <div class="text-right">
-              <span class="text-[10px] uppercase text-slate-400 block">20-Yr Annualised Return</span>
-              <span class="text-xl font-black text-emerald-400 font-mono">${idx.metrics.cagr20.toFixed(2)}% p.a.</span>
+              <span class="text-[10px] uppercase text-slate-400 block">20-Yr / 10-Yr CAGR</span>
+              <span class="text-lg font-black text-emerald-400 font-mono">${idx.metrics.cagr20.toFixed(2)}% <span class="text-cyan-300 text-sm">/ ${idx.metrics.cagr10.toFixed(2)}%</span></span>
             </div>
             <div class="text-right">
               <span class="text-[10px] uppercase text-slate-400 block">${formatGBP(state.lumpSum)} → 20 Yrs</span>
@@ -887,19 +898,17 @@ function renderAllIndexesCatalog() {
         <div class="p-4 space-y-4">
           <!-- 20-Year Index Yearly Returns Strip -->
           <div>
-            <div class="text-xs font-bold text-slate-700 mb-1.5">20-Year Yearly % Return Series (2006–2025 + 2026 YTD):</div>
+            <div class="text-xs font-bold text-slate-700 mb-1.5">20-Year Yearly % Return Series (2007–2026, Including 2026):</div>
             <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded-lg">
               <table class="min-w-full text-[11px] border-collapse">
                 <thead>
                   <tr class="bg-slate-100 text-slate-700">
                     ${yearHeaders}
-                    <th class="py-1.5 px-1.5 text-right font-mono bg-brand-50 text-brand-800">2026 YTD</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     ${indexYearCells}
-                    <td class="py-1.5 px-1.5 text-right font-mono font-bold bg-brand-50 text-brand-800">${formatPct(idx.yearlyReturns["2026 YTD"])}</td>
                   </tr>
                 </tbody>
               </table>
@@ -919,6 +928,7 @@ function renderAllIndexesCatalog() {
                     <th class="py-2 px-3">Ticker</th>
                     <th class="py-2 px-3 text-right">OCF</th>
                     <th class="py-2 px-3 text-right">20-Yr CAGR</th>
+                    <th class="py-2 px-3 text-right">10-Yr CAGR</th>
                     <th class="py-2 px-3 text-right">Alpha p.a.</th>
                     <th class="py-2 px-3 text-right">${formatGBP(state.lumpSum)} (20Y)</th>
                     <th class="py-2 px-3 text-right">Extra Gain</th>
@@ -937,7 +947,7 @@ function renderAllIndexesCatalog() {
 }
 
 /**
- * 7. Export Complete 20-Year Dataset (All 12 Indexes + All 60 Outperforming Funds) to CSV
+ * 7. Export Complete 20-Year Dataset (All 15 Indexes + All 75 Outperforming Funds) to CSV
  */
 function exportFullDatasetCSV() {
   const headers = [
@@ -949,12 +959,11 @@ function exportFullDatasetCSV() {
     "Vehicle Type",
     "Ticker / ISIN",
     "OCF %",
-    "20-Yr CAGR %",
+    "20-Yr CAGR % (2007-2026)",
     "Annual Alpha vs Index %",
-    "10-Yr CAGR %",
+    "10-Yr CAGR % (2017-2026)",
     "£10,000 Compounded 20-Yr Value (£)",
-    ...window.YEARS_20,
-    "2026 YTD"
+    ...window.YEARS_20
   ];
 
   const rows = [headers.join(",")];
@@ -974,8 +983,7 @@ function exportFullDatasetCSV() {
       0.00,
       idx.metrics.cagr10,
       idx.metrics.value10k,
-      ...idxYears,
-      idx.yearlyReturns["2026 YTD"]
+      ...idxYears
     ].join(","));
 
     idx.topFunds.forEach(f => {
@@ -993,8 +1001,7 @@ function exportFullDatasetCSV() {
         f.alphaAnnual,
         f.metrics.cagr10,
         f.metrics.value10k,
-        ...fYears,
-        f.yearlyReturns["2026 YTD"]
+        ...fYears
       ].join(","));
     });
   });
