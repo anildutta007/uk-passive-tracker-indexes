@@ -90,6 +90,29 @@ function getPeriodReturn(item, p = state.period) {
   }
 }
 
+function getSortedFundsForPeriod(idx, p = state.period) {
+  const funds = [...idx.topFunds];
+  funds.sort((a, b) => getPeriodReturn(b, p) - getPeriodReturn(a, p));
+  return funds.map((f, i) => ({
+    ...f,
+    dynamicRank: i + 1,
+    dynamicReturn: getPeriodReturn(f, p),
+    dynamicAlpha: +(getPeriodReturn(f, p) - getPeriodReturn(idx, p)).toFixed(2)
+  }));
+}
+
+function getPeriodLabel(p = state.period) {
+  switch (p) {
+    case "10Y": return "10-Year (2017–2026)";
+    case "5Y": return "5-Year (2022–2026)";
+    case "3Y": return "3-Year (2024–2026)";
+    case "2Y": return "2-Year (2025–2026)";
+    case "2026": return "2026 YTD";
+    case "20Y":
+    default: return "20-Year (2007–2026)";
+  }
+}
+
 // Formatting helpers
 function formatGBP(val) {
   return "£" + Math.round(val).toLocaleString("en-GB");
@@ -422,13 +445,18 @@ function renderSidebar() {
     return;
   }
 
-  container.innerHTML = list.map(idx => {
+  // Compute dynamic rank for current view
+  const startYr = getStartYearForPeriod();
+  const periodYears = window.YEARS_20.filter(yr => Number(yr) >= startYr);
+
+  container.innerHTML = list.map((idx, indexPos) => {
     const isSelected = idx.id === state.selectedIndexId;
     const periodVal = getPeriodReturn(idx);
     const isPos = periodVal >= 0;
+    const dynamicRank = indexPos + 1;
 
-    // Mini 20-bar sparkline (2007..2026)
-    const sparkbars = window.YEARS_20.map(yr => {
+    // Dynamic period sparkline (shows the selected period's calendar years)
+    const sparkbars = periodYears.map(yr => {
       const val = Number(idx.yearlyReturns[yr] || 0);
       const isUp = val >= 0;
       const heightPx = Math.min(18, Math.max(3, Math.round(Math.abs(val) / 2.8)));
@@ -444,7 +472,7 @@ function renderSidebar() {
                : "bg-white hover:bg-slate-50 border-slate-200"
            }">
         <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
-          <span>#${idx.returnRank} · ${idx.category}</span>
+          <span><strong class="${dynamicRank <= 3 ? 'text-emerald-700' : 'text-slate-700'}">#${dynamicRank}</strong> (${state.period}) · ${idx.category}</span>
           <span>OCF ${idx.lowestOcf.toFixed(2)}%</span>
         </div>
 
@@ -457,8 +485,8 @@ function renderSidebar() {
           </span>
         </div>
 
-        <!-- Mini 20-bar sparkline (zero line in middle) -->
-        <div class="h-5 flex items-center justify-center overflow-hidden border-t border-slate-100 pt-1" title="20-Year Returns (2007–2026)">
+        <!-- Dynamic sparkline for selected period (zero line in middle) -->
+        <div class="h-5 flex items-center justify-center overflow-hidden border-t border-slate-100 pt-1" title="${state.period} Returns (${startYr}–2026)">
           <div class="flex items-center h-4">
             ${sparkbars}
           </div>
@@ -596,13 +624,14 @@ function renderOverlayChips(idx) {
   const container = document.getElementById("bar-chart-overlay-chips");
   if (!container) return;
 
+  const sortedFunds = getSortedFundsForPeriod(idx);
   const chips = [
     { rank: 0, label: "Index only", color: "var(--primary)" },
-    ...idx.topFunds.map(f => ({
-      rank: f.rank,
-      label: `#${f.rank} ${f.name.slice(0, 15)}...`,
+    ...sortedFunds.map(f => ({
+      rank: f.dynamicRank,
+      label: `#${f.dynamicRank} ${f.name.slice(0, 15)}...`,
       fullName: f.name,
-      color: SPEC_COLORS.funds[f.rank - 1]
+      color: SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb"
     }))
   ];
 
@@ -628,10 +657,18 @@ function setOverlayFund(rank) {
 
 function renderYearlyBarChart(idx) {
   const ctx = document.getElementById("yearlyBarChart");
+  const titleEl = document.getElementById("annual-bar-chart-title");
   if (!ctx) return;
 
-  const labels = window.YEARS_20.map(y => `'${y.slice(2)}`);
-  const indexReturns = window.YEARS_20.map(y => Number(idx.yearlyReturns[y] || 0));
+  const startYr = getStartYearForPeriod();
+  const periodYears = window.YEARS_20.filter(y => Number(y) >= startYr);
+
+  if (titleEl) {
+    titleEl.textContent = `Annual % returns (${startYr}–2026)`;
+  }
+
+  const labels = periodYears.map(y => `'${y.slice(2)}`);
+  const indexReturns = periodYears.map(y => Number(idx.yearlyReturns[y] || 0));
 
   const datasets = [
     {
@@ -643,12 +680,13 @@ function renderYearlyBarChart(idx) {
   ];
 
   if (state.selectedOverlayFundRank > 0) {
-    const fund = idx.topFunds.find(f => f.rank === state.selectedOverlayFundRank);
+    const sortedFunds = getSortedFundsForPeriod(idx);
+    const fund = sortedFunds.find(f => f.dynamicRank === state.selectedOverlayFundRank);
     if (fund) {
-      const fundReturns = window.YEARS_20.map(y => Number(fund.yearlyReturns[y] || 0));
-      const fundColor = SPEC_COLORS.funds[fund.rank - 1];
+      const fundReturns = periodYears.map(y => Number(fund.yearlyReturns[y] || 0));
+      const fundColor = SPEC_COLORS.funds[fund.dynamicRank - 1] || "#2563eb";
       datasets.push({
-        label: `#${fund.rank}: ${fund.name}`,
+        label: `#${fund.dynamicRank}: ${fund.name}`,
         data: fundReturns,
         backgroundColor: fundColor,
         borderRadius: 2
@@ -713,11 +751,13 @@ function renderGrowthLineChart(idx) {
     }
   ];
 
-  idx.topFunds.forEach(f => {
+  const sortedFunds = getSortedFundsForPeriod(idx);
+  const displayedGrowthFunds = sortedFunds.slice(0, state.fundDisplayLimit);
+  displayedGrowthFunds.forEach(f => {
     const fSeries = growth(f.yearlyReturns, startYr, state.investAmount);
-    const color = SPEC_COLORS.funds[f.rank - 1];
+    const color = SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb";
     datasets.push({
-      label: `#${f.rank} ${f.name}`,
+      label: `#${f.dynamicRank} ${f.name}`,
       data: fSeries.map(pt => pt.value),
       borderColor: color,
       borderWidth: 2,
@@ -769,9 +809,16 @@ function renderTop5Section(idx = getSelectedIndex()) {
   const indexNameEl = document.getElementById("top5-index-name");
   const cagrBadge = document.getElementById("top5-benchmark-cagr-badge");
   const thAmountCol = document.getElementById("th-top5-amount-col");
+  const subtitleEl = document.getElementById("top5-subtitle");
 
   if (indexNameEl) indexNameEl.textContent = idx.name;
-  if (cagrBadge) cagrBadge.textContent = `20Y: ${idx.metrics.cagr20.toFixed(2)}% p.a. | 10Y: ${idx.metrics.cagr10.toFixed(2)}% p.a.`;
+  if (subtitleEl) {
+    subtitleEl.textContent = `Ranked by ${getPeriodLabel(state.period)} return net of OCF · UK Active OEICs, LSE Investment Trusts and Smart-Beta Factor ETFs`;
+  }
+  if (cagrBadge) {
+    const periodVal = getPeriodReturn(idx);
+    cagrBadge.textContent = `${state.period} Benchmark: ${formatYearlyPct(periodVal)} (${state.period === '2026' ? '2026 Return' : 'CAGR p.a.'}) | 20Y: ${idx.metrics.cagr20.toFixed(2)}% | 10Y: ${idx.metrics.cagr10.toFixed(2)}%`;
+  }
   if (thAmountCol) thAmountCol.textContent = `${formatGBP(state.investAmount)} (${state.period})`;
 
   const btnCards = document.getElementById("view-toggle-cards");
@@ -812,6 +859,7 @@ function renderTop5Section(idx = getSelectedIndex()) {
       btnTop5.classList.remove("bg-slate-900", "text-white", "font-bold");
       btnTop5.classList.add("text-slate-600", "font-semibold");
       renderTop5Section(idx);
+      renderGrowthLineChart(idx);
     };
 
     btnTop5.onclick = () => {
@@ -821,6 +869,7 @@ function renderTop5Section(idx = getSelectedIndex()) {
       btnTop3.classList.remove("bg-slate-900", "text-white", "font-bold");
       btnTop3.classList.add("text-slate-600", "font-semibold");
       renderTop5Section(idx);
+      renderGrowthLineChart(idx);
     };
   }
 
@@ -834,12 +883,12 @@ function renderTop5Cards(idx) {
 
   const startYr = getStartYearForPeriod();
   const indexFinal = finalValue(idx.yearlyReturns, startYr, state.investAmount);
-
-  const displayedFunds = idx.topFunds.slice(0, state.fundDisplayLimit);
+  const sortedFunds = getSortedFundsForPeriod(idx);
+  const displayedFunds = sortedFunds.slice(0, state.fundDisplayLimit);
 
   container.innerHTML = displayedFunds.map(f => {
-    const isOpen = state.accordionOpenRank === f.rank;
-    const color = SPEC_COLORS.funds[f.rank - 1];
+    const isOpen = state.accordionOpenRank === f.dynamicRank;
+    const color = SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb";
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
     const extraVsIndex = fundFinal - indexFinal;
 
@@ -848,12 +897,12 @@ function renderTop5Cards(idx) {
         isOpen ? "border-slate-400 shadow-sm" : "border-slate-200"
       }">
         <!-- Collapsed Row Header -->
-        <button type="button" onclick="toggleAccordion(${f.rank})"
+        <button type="button" onclick="toggleAccordion(${f.dynamicRank})"
                 class="w-full p-3.5 flex items-center justify-between gap-3 text-left hover:bg-slate-50 transition cursor-pointer">
           <div class="flex items-center gap-3 min-w-0">
             <span class="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs text-white shrink-0"
                   style="background-color: ${color}">
-              ${f.rank === 1 ? '<i data-lucide="trophy" class="w-4 h-4 text-white"></i>' : `#${f.rank}`}
+              ${f.dynamicRank === 1 ? '<i data-lucide="trophy" class="w-4 h-4 text-white"></i>' : `#${f.dynamicRank}`}
             </span>
             <div class="min-w-0">
               <h4 class="text-sm font-bold text-slate-900 truncate">${f.name}</h4>
@@ -863,11 +912,11 @@ function renderTop5Cards(idx) {
 
           <div class="flex items-center gap-3 shrink-0">
             <div class="text-right hidden sm:block">
-              <span class="text-xs font-mono font-black text-slate-900">${f.metrics.cagr20.toFixed(2)}%</span>
-              <span class="text-[10px] text-slate-400 block font-mono">20Y CAGR</span>
+              <span class="text-xs font-mono font-black text-slate-900">${formatYearlyPct(f.dynamicReturn)}</span>
+              <span class="text-[10px] text-slate-400 block font-mono">${state.period} Return</span>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              +${f.alphaAnnual.toFixed(2)}% p.a. alpha
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${f.dynamicAlpha >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'} border">
+              ${f.dynamicAlpha >= 0 ? '+' : ''}${f.dynamicAlpha.toFixed(2)}% vs index
             </span>
             <i data-lucide="${isOpen ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4 text-slate-400 transition-transform"></i>
           </div>
@@ -878,14 +927,16 @@ function renderTop5Cards(idx) {
           <div class="p-4 border-t bg-slate-50/50 space-y-3" style="border-color: var(--border);">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <div class="p-2.5 rounded bg-white border border-slate-200">
-                <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">20Y CAGR (07–26)</span>
-                <span class="text-sm font-black font-mono-num text-slate-900">${f.metrics.cagr20.toFixed(2)}%</span>
-                <span class="text-[10px] text-emerald-600 font-semibold block font-mono">vs ${idx.metrics.cagr20.toFixed(2)}%</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">${state.period} Return</span>
+                <span class="text-sm font-black font-mono-num text-slate-900">${formatYearlyPct(f.dynamicReturn)}</span>
+                <span class="text-[10px] ${f.dynamicAlpha >= 0 ? 'text-emerald-600' : 'text-rose-600'} font-semibold block font-mono">
+                  ${f.dynamicAlpha >= 0 ? '+' : ''}${f.dynamicAlpha.toFixed(2)}% vs index
+                </span>
               </div>
               <div class="p-2.5 rounded bg-white border border-slate-200">
-                <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">10Y CAGR (17–26)</span>
-                <span class="text-sm font-black font-mono-num text-indigo-700">${f.metrics.cagr10.toFixed(2)}%</span>
-                <span class="text-[10px] text-indigo-600 font-semibold block font-mono">vs ${idx.metrics.cagr10.toFixed(2)}%</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">20Y &amp; 10Y CAGR</span>
+                <span class="text-sm font-black font-mono-num text-indigo-700">${f.metrics.cagr20.toFixed(2)}% · ${f.metrics.cagr10.toFixed(2)}%</span>
+                <span class="text-[10px] text-slate-500 font-semibold block font-mono">20Y / 10Y</span>
               </div>
               <div class="p-2.5 rounded bg-white border border-slate-200">
                 <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">5Y / 3Y / 2Y</span>
@@ -941,6 +992,8 @@ function renderTop5Table(idx) {
 
   const startYr = getStartYearForPeriod();
   const indexFinal = finalValue(idx.yearlyReturns, startYr, state.investAmount);
+  const sortedFunds = getSortedFundsForPeriod(idx);
+  const displayedFunds = sortedFunds.slice(0, state.fundDisplayLimit);
 
   // Baseline row (shaded)
   const baselineRow = `
@@ -962,18 +1015,17 @@ function renderTop5Table(idx) {
     </tr>
   `;
 
-  const displayedFunds = idx.topFunds.slice(0, state.fundDisplayLimit);
   const fundRows = displayedFunds.map(f => {
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
     const extraVsIndex = fundFinal - indexFinal;
-    const color = SPEC_COLORS.funds[f.rank - 1];
+    const color = SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb";
 
     return `
       <tr class="hover:bg-slate-50 transition border-b border-slate-100">
         <td class="py-2.5 px-3 font-mono font-bold text-slate-900">
           <span class="inline-flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
-            #${f.rank}
+            #${f.dynamicRank}
           </span>
         </td>
         <td class="py-2.5 px-3 font-bold text-slate-900">
@@ -986,12 +1038,12 @@ function renderTop5Table(idx) {
         </td>
         <td class="py-2.5 px-3 font-mono text-slate-700">${f.ticker}</td>
         <td class="py-2.5 px-2 text-right font-mono text-slate-700">${f.ocf.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/50">${f.metrics.cagr20.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-bold text-emerald-600">+${f.alphaAnnual.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-bold text-indigo-700 bg-indigo-50/40">${f.metrics.cagr10.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-semibold text-slate-700">${f.metrics.cagr5.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-bold text-cyan-800">${f.metrics.cagr3.toFixed(2)}%</td>
-        <td class="py-2.5 px-2 text-right font-mono font-bold text-amber-800">${f.metrics.cagr2.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono ${state.period === '20Y' ? 'font-extrabold text-emerald-700 bg-emerald-50/50' : 'font-semibold text-slate-800'}">${f.metrics.cagr20.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono font-bold ${f.dynamicAlpha >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${f.dynamicAlpha >= 0 ? '+' : ''}${f.dynamicAlpha.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono ${state.period === '10Y' ? 'font-extrabold text-indigo-700 bg-indigo-50/40' : 'font-semibold text-slate-700'}">${f.metrics.cagr10.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono ${state.period === '5Y' ? 'font-extrabold text-indigo-700 bg-indigo-50/40' : 'font-semibold text-slate-700'}">${f.metrics.cagr5.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono ${state.period === '3Y' ? 'font-extrabold text-cyan-800 bg-cyan-50/40' : 'font-semibold text-slate-700'}">${f.metrics.cagr3.toFixed(2)}%</td>
+        <td class="py-2.5 px-2 text-right font-mono ${state.period === '2Y' ? 'font-extrabold text-amber-800 bg-amber-50/40' : 'font-semibold text-slate-700'}">${f.metrics.cagr2.toFixed(2)}%</td>
         <td class="py-2.5 px-2.5 text-right font-mono font-black text-slate-900">${formatGBP(fundFinal)}</td>
         <td class="py-2.5 px-2 text-right font-mono font-bold ${extraVsIndex >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
           ${extraVsIndex >= 0 ? '+' : ''}${formatGBP(extraVsIndex)}
