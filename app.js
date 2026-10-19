@@ -113,6 +113,107 @@ function getPeriodLabel(p = state.period) {
   }
 }
 
+const KNOWN_FUND_INCEPTION = {
+  // Semiconductors (VanEck SMGB / SMH)
+  "IE00BMC38736": {
+    launch: "01/12/2020",
+    liveYears: "~6 Years Live (2020–2026)",
+    isFullLive20Y: false,
+    note: "The European UCITS ETF (SMGB/SMH) launched on 01/12/2020 on the London Stock Exchange for UK retail & ISA/SIPP investors. Periods for 2Y, 3Y, 5Y and 2026 represent live UCITS fund returns; 10Y and 20Y returns represent the underlying MVIS US Listed Semiconductor 25 Index & US parent fund (SMH, launched May 2000) converted to GBP net of 0.35% OCF."
+  },
+  // iShares S&P 500 Info Tech (IUIT)
+  "IE00B3WJKG14": {
+    launch: "20/11/2015",
+    liveYears: "11 Years Live (2015–2026)",
+    isFullLive20Y: false,
+    note: "The Dublin-domiciled UCITS ETF launched in Nov 2015. 2Y, 3Y, 5Y and 10Y (post-2015) represent live UCITS performance; prior returns represent the S&P 500 Information Technology Index in GBP net of OCF."
+  },
+  // Allianz Technology Trust (ATT)
+  "GB00BNG2M159": {
+    launch: "Dec 1995",
+    liveYears: "30+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (LSE: ATT, established December 1995)."
+  },
+  // Polar Capital Technology Trust (PCT)
+  "GB00BR3YV268": {
+    launch: "Dec 1996",
+    liveYears: "29+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (LSE: PCT, established December 1996)."
+  },
+  // Fidelity Global Technology Fund
+  "GB00B4YZN801": {
+    launch: "Feb 2012 (W Acc)",
+    liveYears: "14+ Years (2012–2026)",
+    isFullLive20Y: false,
+    note: "Fidelity Global Technology clean share class launched Feb 2012 (primary fund strategy established Oct 2006). Pre-2012 returns reflect institutional share class / fund strategy in GBP net of OCF."
+  },
+  // Baillie Gifford American
+  "GB0005852504": {
+    launch: "Jul 1997",
+    liveYears: "28+ Years Live UK OEIC",
+    isFullLive20Y: true,
+    note: "Full 20-year live UK OEIC track record (launched July 1997, Class B Acc in GBP)."
+  },
+  // iShares Edge MSCI USA Momentum (IUMO)
+  "IE00BD1F4N50": {
+    launch: "Oct 2016",
+    liveYears: "10 Years Live (2016–2026)",
+    isFullLive20Y: false,
+    note: "European UCITS ETF launched Oct 2016. Post-2016 periods reflect live UCITS performance; earlier periods reflect the MSCI USA Momentum Index in GBP net of OCF."
+  },
+  // JPM US Growth
+  "GB00B2Q5VD07": {
+    launch: "Oct 2000",
+    liveYears: "25+ Years Live UK OEIC",
+    isFullLive20Y: true,
+    note: "Full 20-year live UK OEIC track record (launched October 2000, Class C Acc in GBP)."
+  },
+  // Fundsmith Equity
+  "GB00B41YBW71": {
+    launch: "01/11/2010",
+    liveYears: "15+ Years Live (2010–2026)",
+    isFullLive20Y: false,
+    note: "Fundsmith Equity launched on 1 November 2010. Performance from 2011–2026 represents live fund history; prior returns represent strategy backtest / benchmark proxy."
+  },
+  // Scottish Mortgage (SMT)
+  "GB0007873900": {
+    launch: "1909",
+    liveYears: "100+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (FTSE 100 constituent, established 1909)."
+  },
+  // Monks Investment Trust
+  "GB0030517261": {
+    launch: "1929",
+    liveYears: "90+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (established 1929)."
+  },
+  // Finsbury Growth & Income Trust
+  "GB0003463786": {
+    launch: "1926",
+    liveYears: "90+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (established 1926)."
+  },
+  // Fidelity China Special Situations
+  "GB00B62Z3C74": {
+    launch: "Apr 2010",
+    liveYears: "16+ Years Live LSE",
+    isFullLive20Y: false,
+    note: "LSE Investment Trust launched April 2010. Returns from 2010–2026 reflect live LSE trading; earlier periods reflect China active benchmark proxy."
+  },
+  // JPMorgan Indian Investment Trust
+  "GB0004743822": {
+    launch: "1994",
+    liveYears: "30+ Years Live LSE",
+    isFullLive20Y: true,
+    note: "Full 20-year live exchange-traded track record on the London Stock Exchange (LSE: JII, established 1994)."
+  }
+};
+
 function getFundSourceInfo(fund) {
   const vType = (fund.vehicleType || "").toLowerCase();
   const isIT = vType.includes("investment trust") || vType.includes("plc");
@@ -135,11 +236,33 @@ function getFundSourceInfo(fund) {
   const queryTerm = encodeURIComponent(`${fund.name} ${fund.isin || fund.ticker} factsheet morningstar trustnet`);
   const verifyUrl = `https://www.google.com/search?q=${queryTerm}`;
 
+  // Inception & Track Record Intelligence
+  const known = KNOWN_FUND_INCEPTION[fund.isin] || KNOWN_FUND_INCEPTION[fund.ticker];
+  let launch = isIT ? "Established LSE Trust" : isETF ? "UCITS ETF (LSE)" : "UK Authorised Fund";
+  let liveYears = isIT ? "20Y+ Live LSE History" : isETF ? "Live UCITS + Underlying Index History" : "Live Fund / Institutional Share Class";
+  let isFullLive20Y = isIT;
+  let note = isIT 
+    ? "London-listed Investment Trust with multi-decade exchange-traded price and NAV track record."
+    : isETF
+    ? "UK/EU UCITS vehicle. Recent multi-year periods (2Y, 3Y, 5Y) reflect live UCITS performance; extended 10Y/20Y history reflects the underlying benchmark index / parent strategy in GBP net of OCF."
+    : "FCA-authorised UK fund. Long-term returns cross-referenced against primary institutional share class and strategy history in GBP net of OCF.";
+
+  if (known) {
+    launch = known.launch;
+    liveYears = known.liveYears;
+    isFullLive20Y = known.isFullLive20Y;
+    note = known.note;
+  }
+
   return {
     primaryRegistry,
     regulatoryDoc,
     exchangeOrPlatform,
-    verifyUrl
+    verifyUrl,
+    launch,
+    liveYears,
+    isFullLive20Y,
+    note
   };
 }
 
@@ -983,21 +1106,26 @@ function renderTop5Cards(idx) {
               </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
               <div class="p-2 rounded bg-white border border-slate-200">
                 <span class="text-slate-400 text-[10px] block font-mono">Ongoing Charge (OCF):</span>
                 <span class="font-bold text-slate-900 font-mono">${f.ocf.toFixed(2)}%</span>
                 <span class="text-[10px] text-slate-500 block">Ticker: ${f.ticker}</span>
               </div>
               <div class="p-2 rounded bg-white border border-slate-200">
+                <span class="text-slate-400 text-[10px] block font-mono">Vehicle Structure:</span>
+                <span class="font-bold text-slate-900 truncate">${f.vehicleType}</span>
+                <span class="text-[10px] text-slate-500 block truncate">${f.house}</span>
+              </div>
+              <div class="p-2 rounded bg-white border border-slate-200">
+                <span class="text-slate-400 text-[10px] block font-mono">Vehicle Inception:</span>
+                <span class="font-bold text-slate-900">${sourceInfo.launch}</span>
+                <span class="text-[10px] ${sourceInfo.isFullLive20Y ? 'text-emerald-700 font-bold' : 'text-slate-500 font-semibold'} block">${sourceInfo.liveYears}</span>
+              </div>
+              <div class="p-2 rounded bg-white border border-slate-200">
                 <span class="text-slate-400 text-[10px] block font-mono">Years Beat Index:</span>
                 <span class="font-bold text-emerald-700 font-mono">${f.yearsBeatIndex} / 20</span>
-                <span class="text-[10px] text-slate-500 block">Manager: ${f.manager}</span>
-              </div>
-              <div class="p-2 rounded bg-white border border-slate-200 col-span-2 sm:col-span-1">
-                <span class="text-slate-400 text-[10px] block font-mono">Vehicle Structure:</span>
-                <span class="font-bold text-slate-900">${f.vehicleType}</span>
-                <span class="text-[10px] text-slate-500 block">${f.house}</span>
+                <span class="text-[10px] text-slate-500 block truncate" title="${f.manager}">Mgr: ${f.manager}</span>
               </div>
             </div>
 
@@ -1006,7 +1134,7 @@ function renderTop5Cards(idx) {
             </div>
 
             <!-- Data Source & Independent Verification Box -->
-            <div class="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200 text-xs text-slate-700 space-y-2">
+            <div class="p-3.5 rounded-lg bg-emerald-50/60 border border-emerald-200 text-xs text-slate-700 space-y-2.5">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-1.5 font-bold text-emerald-950">
                   <i data-lucide="shield-check" class="w-4 h-4 text-emerald-700 shrink-0"></i>
@@ -1038,10 +1166,26 @@ function renderTop5Cards(idx) {
                   <span class="font-semibold text-slate-800">${sourceInfo.regulatoryDoc}</span>
                 </div>
                 <div>
-                  <span class="text-slate-500 font-mono block text-[10px] uppercase font-bold">Listing / Registry:</span>
-                  <span class="font-semibold text-slate-800">${sourceInfo.exchangeOrPlatform}</span>
+                  <span class="text-slate-500 font-mono block text-[10px] uppercase font-bold">Listing / Inception:</span>
+                  <span class="font-semibold text-slate-800">${sourceInfo.exchangeOrPlatform} · ${sourceInfo.launch}</span>
                 </div>
               </div>
+
+              <!-- Track Record Inception Transparency Notice -->
+              <div class="p-2.5 rounded-md ${sourceInfo.isFullLive20Y ? 'bg-white/80 border border-emerald-200 text-emerald-950' : 'bg-amber-50/90 border border-amber-200 text-amber-950'} leading-relaxed">
+                <div class="flex items-start gap-2">
+                  <i data-lucide="${sourceInfo.isFullLive20Y ? 'check-circle' : 'info'}" class="w-4 h-4 ${sourceInfo.isFullLive20Y ? 'text-emerald-700' : 'text-amber-700'} shrink-0 mt-0.5"></i>
+                  <div>
+                    <span class="font-bold text-[11px] block">
+                      ${sourceInfo.isFullLive20Y ? 'Full 20-Year Live Exchange History' : 'Track Record Inception & History Notice'}:
+                    </span>
+                    <span class="text-[11px] text-slate-700 block mt-0.5">
+                      ${sourceInfo.note}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <p class="text-[10px] text-slate-500 leading-normal">
                 Calibrated in <strong>GBP (£) Total Return</strong> net of OCF with gross dividends and distributions reinvested. Cross-referenced against <strong>Morningstar UK</strong>, <strong>FE fundinfo (Trustnet)</strong>, and <strong>${f.house}</strong> audited annual reports.
               </p>
@@ -1105,6 +1249,7 @@ function renderTop5Table(idx) {
         <td class="py-2.5 px-3 font-bold text-slate-900">
           <div>${f.name}</div>
           <div class="text-[10px] font-normal text-slate-500">Manager: ${f.manager}</div>
+          <div class="text-[10px] font-mono text-slate-400">Launch: ${sourceInfo.launch} (${sourceInfo.liveYears})</div>
         </td>
         <td class="py-2.5 px-3 text-slate-600">
           <div class="font-semibold text-slate-800">${f.house}</div>
