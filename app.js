@@ -87,6 +87,10 @@ function getSortedIndexes() {
       return list.sort((a, b) => b.metrics.cagr10 - a.metrics.cagr10);
     case "cagr5_desc":
       return list.sort((a, b) => b.metrics.cagr5 - a.metrics.cagr5);
+    case "cagr3_desc":
+      return list.sort((a, b) => b.metrics.cagr3 - a.metrics.cagr3);
+    case "cagr2_desc":
+      return list.sort((a, b) => b.metrics.cagr2 - a.metrics.cagr2);
     case "ytd_desc":
       return list.sort((a, b) => (b.yearlyReturns["2026"] || 0) - (a.yearlyReturns["2026"] || 0));
     case "ocf_asc":
@@ -335,11 +339,17 @@ function renderIndexCards() {
           </div>
         </div>
 
+        <div class="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] font-mono text-slate-500">
+          <span>5Y: <strong class="text-slate-700">${idx.metrics.cagr5.toFixed(1)}%</strong></span>
+          <span>3Y: <strong class="text-cyan-700">${idx.metrics.cagr3.toFixed(1)}%</strong></span>
+          <span>2Y: <strong class="text-amber-700">${idx.metrics.cagr2.toFixed(1)}%</strong></span>
+        </div>
+
         <div class="mt-2 pt-2 border-t border-slate-100/80 flex items-center justify-between text-[11px]">
           <span class="text-slate-500 font-medium truncate max-w-[65%]" title="#1 Outperforming Fund: ${topFund.name}">
             <strong class="text-indigo-600">#1 Beat:</strong> ${topFund.name}
           </span>
-          <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded" title="20Y: ${topFund.metrics.cagr20.toFixed(1)}% | 10Y: ${topFund.metrics.cagr10.toFixed(1)}%">
+          <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded" title="20Y: ${topFund.metrics.cagr20.toFixed(1)}% | 10Y: ${topFund.metrics.cagr10.toFixed(1)}% | 3Y: ${topFund.metrics.cagr3.toFixed(1)}%">
             20Y: ${topFund.metrics.cagr20.toFixed(1)}% | 10Y: ${topFund.metrics.cagr10.toFixed(1)}%
           </span>
         </div>
@@ -361,6 +371,9 @@ function renderMasterMatrix() {
     <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[235px]">Rank &amp; Passive Tracker Index (UK)</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-emerald-300">20Y CAGR ↓</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-cyan-300">10Y CAGR</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-slate-300">5Y</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-teal-300">3Y</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300">2Y</th>
     <th class="py-2.5 px-2.5 text-right bg-slate-800">${formatGBP(state.lumpSum)} (20Y)</th>
     ${yearHeaders}
   `;
@@ -399,6 +412,15 @@ function renderMasterMatrix() {
         <td class="py-2 px-2 text-right font-mono font-bold text-brand-700 bg-brand-50/50">
           ${idx.metrics.cagr10.toFixed(2)}%
         </td>
+        <td class="py-2 px-2 text-right font-mono font-semibold text-slate-700 bg-slate-50">
+          ${idx.metrics.cagr5.toFixed(2)}%
+        </td>
+        <td class="py-2 px-2 text-right font-mono font-bold text-cyan-800 bg-cyan-50/40">
+          ${idx.metrics.cagr3.toFixed(2)}%
+        </td>
+        <td class="py-2 px-2 text-right font-mono font-bold text-amber-800 bg-amber-50/40">
+          ${idx.metrics.cagr2.toFixed(2)}%
+        </td>
         <td class="py-2 px-2.5 text-right font-mono font-bold text-slate-900 bg-slate-50">
           ${formatGBP(scaledPot)}
         </td>
@@ -426,7 +448,9 @@ function renderSelectedIndexDetail(idx) {
   document.getElementById("detail-lump-label").textContent = `${formatGBP(state.lumpSum)} Grew To (20 Yrs)`;
   document.getElementById("detail-value-10k").textContent = formatGBP(scaledIndexPot);
   document.getElementById("detail-cum-pct").textContent = `+${idx.metrics.cumulativePct.toLocaleString()}% cumulative return`;
-  document.getElementById("detail-cagr-10-5").textContent = `${idx.metrics.cagr10.toFixed(2)}% / ${idx.metrics.cagr5.toFixed(2)}%`;
+  document.getElementById("detail-cagr-10-5").textContent = `10Y: ${idx.metrics.cagr10.toFixed(2)}% | 5Y: ${idx.metrics.cagr5.toFixed(2)}%`;
+  const cagr32El = document.getElementById("detail-cagr-3-2");
+  if (cagr32El) cagr32El.textContent = `3Y: ${idx.metrics.cagr3.toFixed(2)}% | 2Y: ${idx.metrics.cagr2.toFixed(2)}%`;
   document.getElementById("detail-pos-years").textContent = `${idx.metrics.posYears} / 20 Yrs (${Math.round(idx.metrics.posYears / 20 * 100)}%)`;
 
   // Cheapest UK Passive Tracker Funds / ETFs
@@ -506,7 +530,7 @@ function renderTop5FundCards(idx, scaleFactor, scaledIndexPot) {
             ${f.house} • <span class="text-indigo-600">${f.vehicleType}</span>
           </div>
 
-          <!-- Key Metrics Box (20-Yr CAGR, 10-Yr CAGR & 20-Yr Compounded Pot) -->
+          <!-- Key Metrics Box (20-Yr, 10-Yr, 5-Yr, 3-Yr, 2-Yr CAGR) -->
           <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 space-y-2">
             <div class="grid grid-cols-2 gap-2 pb-2 border-b border-slate-200/70">
               <div>
@@ -520,7 +544,27 @@ function renderTop5FundCards(idx, scaleFactor, scaledIndexPot) {
                 <span class="text-[10px] text-indigo-600 font-semibold block">vs ${idx.metrics.cagr10.toFixed(2)}% Index</span>
               </div>
             </div>
-            <div class="flex items-center justify-between">
+
+            <!-- 5Y, 3Y, 2Y Shorter Term CAGR Horizon Row -->
+            <div class="grid grid-cols-3 gap-1 py-1 px-1 bg-white rounded border border-slate-200 text-center text-[10px] font-mono">
+              <div>
+                <span class="text-slate-400 block text-[9px] uppercase font-sans font-bold">5-Yr</span>
+                <span class="font-extrabold text-slate-800">${f.metrics.cagr5.toFixed(1)}%</span>
+                <span class="text-[9px] ${f.alpha5Yr >= 0 ? 'text-emerald-600' : 'text-rose-600'} block">(${f.alpha5Yr >= 0 ? '+' : ''}${f.alpha5Yr.toFixed(1)}%)</span>
+              </div>
+              <div class="border-x border-slate-100">
+                <span class="text-cyan-600 block text-[9px] uppercase font-sans font-bold">3-Yr</span>
+                <span class="font-black text-cyan-800">${f.metrics.cagr3.toFixed(1)}%</span>
+                <span class="text-[9px] ${f.alpha3Yr >= 0 ? 'text-emerald-600' : 'text-rose-600'} block">(${f.alpha3Yr >= 0 ? '+' : ''}${f.alpha3Yr.toFixed(1)}%)</span>
+              </div>
+              <div>
+                <span class="text-amber-600 block text-[9px] uppercase font-sans font-bold">2-Yr</span>
+                <span class="font-black text-amber-800">${f.metrics.cagr2.toFixed(1)}%</span>
+                <span class="text-[9px] ${f.alpha2Yr >= 0 ? 'text-emerald-600' : 'text-rose-600'} block">(${f.alpha2Yr >= 0 ? '+' : ''}${f.alpha2Yr.toFixed(1)}%)</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
               <span class="text-[10px] uppercase text-slate-500 font-bold">${formatGBP(state.lumpSum)} → 20Y:</span>
               <div class="text-right">
                 <span class="text-xs font-black text-emerald-700 font-mono">${formatGBP(scaledFundPot)}</span>
@@ -572,6 +616,9 @@ function renderTop5ComparisonTable(idx, scaleFactor, scaledIndexPot) {
       <td class="py-2.5 px-3 text-right font-mono text-base text-white">${idx.metrics.cagr20.toFixed(2)}%</td>
       <td class="py-2.5 px-3 text-right font-mono text-slate-400">Baseline (0.00%)</td>
       <td class="py-2.5 px-3 text-right font-mono text-cyan-300 text-sm">${idx.metrics.cagr10.toFixed(2)}%</td>
+      <td class="py-2.5 px-3 text-right font-mono text-slate-300 text-sm">${idx.metrics.cagr5.toFixed(2)}%</td>
+      <td class="py-2.5 px-3 text-right font-mono text-teal-300 text-sm font-extrabold">${idx.metrics.cagr3.toFixed(2)}%</td>
+      <td class="py-2.5 px-3 text-right font-mono text-amber-300 text-sm font-extrabold">${idx.metrics.cagr2.toFixed(2)}%</td>
       <td class="py-2.5 px-3 text-right font-mono text-amber-300">${formatGBP(scaledIndexPot)}</td>
       <td class="py-2.5 px-3 text-right font-mono text-slate-400">—</td>
       <td class="py-2.5 px-3 text-center font-mono text-slate-300">Benchmark</td>
@@ -604,6 +651,9 @@ function renderTop5ComparisonTable(idx, scaleFactor, scaledIndexPot) {
         <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-700 text-sm bg-emerald-50/50">${f.metrics.cagr20.toFixed(2)}%</td>
         <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-600">+${f.alphaAnnual.toFixed(2)}% p.a.</td>
         <td class="py-2.5 px-3 text-right font-mono font-extrabold text-indigo-700 bg-indigo-50/40 text-sm">${f.metrics.cagr10.toFixed(2)}%</td>
+        <td class="py-2.5 px-3 text-right font-mono font-semibold text-slate-800 text-sm">${f.metrics.cagr5.toFixed(2)}%</td>
+        <td class="py-2.5 px-3 text-right font-mono font-extrabold text-cyan-800 bg-cyan-50/50 text-sm">${f.metrics.cagr3.toFixed(2)}%</td>
+        <td class="py-2.5 px-3 text-right font-mono font-extrabold text-amber-800 bg-amber-50/50 text-sm">${f.metrics.cagr2.toFixed(2)}%</td>
         <td class="py-2.5 px-3 text-right font-mono font-extrabold text-slate-900">${formatGBP(scaledFundPot)}</td>
         <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-700">+${formatGBP(scaledExtra)}</td>
         <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-700">${f.yearsBeatIndex} / 20</td>
@@ -628,6 +678,9 @@ function renderIndexVsTop5YearlyTable(idx) {
     <th class="py-2.5 px-3 text-left sticky-col bg-slate-900 min-w-[235px]">Index / Outperforming Fund</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-emerald-300">20Y CAGR</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-cyan-300">10Y CAGR</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-slate-300">5Y</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-teal-300">3Y</th>
+    <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300">2Y</th>
     <th class="py-2.5 px-2 text-right bg-slate-800 text-amber-300">Alpha</th>
     ${yearHeaders}
   `;
@@ -648,6 +701,9 @@ function renderIndexVsTop5YearlyTable(idx) {
       </td>
       <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 bg-slate-800">${idx.metrics.cagr20.toFixed(2)}%</td>
       <td class="py-2.5 px-2 text-right font-mono font-bold text-cyan-300 bg-slate-800">${idx.metrics.cagr10.toFixed(2)}%</td>
+      <td class="py-2.5 px-2 text-right font-mono font-semibold text-slate-300 bg-slate-800">${idx.metrics.cagr5.toFixed(2)}%</td>
+      <td class="py-2.5 px-2 text-right font-mono font-bold text-teal-300 bg-slate-800">${idx.metrics.cagr3.toFixed(2)}%</td>
+      <td class="py-2.5 px-2 text-right font-mono font-bold text-amber-300 bg-slate-800">${idx.metrics.cagr2.toFixed(2)}%</td>
       <td class="py-2.5 px-2 text-right font-mono text-slate-400 bg-slate-800">Base</td>
       ${indexYearCells}
     </tr>
@@ -675,6 +731,9 @@ function renderIndexVsTop5YearlyTable(idx) {
         </td>
         <td class="py-2 px-2 text-right font-mono font-extrabold text-emerald-700 bg-emerald-50/60">${f.metrics.cagr20.toFixed(2)}%</td>
         <td class="py-2 px-2 text-right font-mono font-extrabold text-indigo-700 bg-indigo-50/50">${f.metrics.cagr10.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-semibold text-slate-700">${f.metrics.cagr5.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-extrabold text-cyan-800 bg-cyan-50/40">${f.metrics.cagr3.toFixed(2)}%</td>
+        <td class="py-2 px-2 text-right font-mono font-extrabold text-amber-800 bg-amber-50/40">${f.metrics.cagr2.toFixed(2)}%</td>
         <td class="py-2 px-2 text-right font-mono font-bold text-emerald-700 bg-emerald-50/40">+${f.alphaAnnual.toFixed(2)}%</td>
         ${cells}
       </tr>
@@ -865,6 +924,9 @@ function renderAllIndexesCatalog() {
           <td class="py-2 px-3 text-right font-mono">${f.ocf.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-extrabold text-emerald-700">${f.metrics.cagr20.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-extrabold text-indigo-700">${f.metrics.cagr10.toFixed(2)}%</td>
+          <td class="py-2 px-3 text-right font-mono font-semibold text-slate-700">${f.metrics.cagr5.toFixed(2)}%</td>
+          <td class="py-2 px-3 text-right font-mono font-bold text-cyan-800 bg-cyan-50/40">${f.metrics.cagr3.toFixed(2)}%</td>
+          <td class="py-2 px-3 text-right font-mono font-bold text-amber-800 bg-amber-50/40">${f.metrics.cagr2.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">+${f.alphaAnnual.toFixed(2)}%</td>
           <td class="py-2 px-3 text-right font-mono font-bold text-slate-900">${formatGBP(scaledFundPot)}</td>
           <td class="py-2 px-3 text-right font-mono font-semibold text-emerald-700">+${formatGBP(scaledExtra)}</td>
@@ -929,6 +991,9 @@ function renderAllIndexesCatalog() {
                     <th class="py-2 px-3 text-right">OCF</th>
                     <th class="py-2 px-3 text-right">20-Yr CAGR</th>
                     <th class="py-2 px-3 text-right">10-Yr CAGR</th>
+                    <th class="py-2 px-3 text-right">5-Yr CAGR</th>
+                    <th class="py-2 px-3 text-right">3-Yr CAGR</th>
+                    <th class="py-2 px-3 text-right">2-Yr CAGR</th>
                     <th class="py-2 px-3 text-right">Alpha p.a.</th>
                     <th class="py-2 px-3 text-right">${formatGBP(state.lumpSum)} (20Y)</th>
                     <th class="py-2 px-3 text-right">Extra Gain</th>
@@ -962,6 +1027,9 @@ function exportFullDatasetCSV() {
     "20-Yr CAGR % (2007-2026)",
     "Annual Alpha vs Index %",
     "10-Yr CAGR % (2017-2026)",
+    "5-Yr CAGR % (2022-2026)",
+    "3-Yr CAGR % (2024-2026)",
+    "2-Yr CAGR % (2025-2026)",
     "£10,000 Compounded 20-Yr Value (£)",
     ...window.YEARS_20
   ];
@@ -982,6 +1050,9 @@ function exportFullDatasetCSV() {
       idx.metrics.cagr20,
       0.00,
       idx.metrics.cagr10,
+      idx.metrics.cagr5,
+      idx.metrics.cagr3,
+      idx.metrics.cagr2,
       idx.metrics.value10k,
       ...idxYears
     ].join(","));
@@ -1000,6 +1071,9 @@ function exportFullDatasetCSV() {
         f.metrics.cagr20,
         f.alphaAnnual,
         f.metrics.cagr10,
+        f.metrics.cagr5,
+        f.metrics.cagr3,
+        f.metrics.cagr2,
         f.metrics.value10k,
         ...fYears
       ].join(","));

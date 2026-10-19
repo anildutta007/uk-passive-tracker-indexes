@@ -67,13 +67,16 @@ function buildFundYearlyReturns(indexReturnsObj, targetCagr20, targetCagr10, bet
 }
 
 /**
- * Compute exact 20-year CAGR (2007–2026), 10-year CAGR (2017–2026), and 5-year CAGR (2022–2026)
+ * Compute exact 20-year CAGR (2007–2026), 10-year CAGR (2017–2026), 5-year CAGR (2022–2026),
+ * 3-year CAGR (2024–2026), and 2-year CAGR (2025–2026)
  * WITH 2026 INCLUDED in all calculations!
  */
 function computeMetrics(yearlyObj) {
   let mult20 = 1;
   let mult10 = 1;
   let mult5 = 1;
+  let mult3 = 1;
+  let mult2 = 1;
   let posYears = 0;
   let bestYear = { year: "2007", val: -999 };
   let worstYear = { year: "2007", val: 999 };
@@ -84,6 +87,8 @@ function computeMetrics(yearlyObj) {
     mult20 *= factor;
     if (i >= 10) mult10 *= factor; // 2017..2026 (10 years incl. 2026)
     if (i >= 15) mult5 *= factor;  // 2022..2026 (5 years incl. 2026)
+    if (i >= 17) mult3 *= factor;  // 2024..2026 (3 years incl. 2026)
+    if (i >= 18) mult2 *= factor;  // 2025..2026 (2 years incl. 2026)
     if (r >= 0) posYears++;
     if (r > bestYear.val) bestYear = { year: yr, val: r };
     if (r < worstYear.val) worstYear = { year: yr, val: r };
@@ -92,17 +97,27 @@ function computeMetrics(yearlyObj) {
   const cagr20 = +((Math.pow(mult20, 1 / 20) - 1) * 100).toFixed(2);
   const cagr10 = +((Math.pow(mult10, 1 / 10) - 1) * 100).toFixed(2);
   const cagr5 = +((Math.pow(mult5, 1 / 5) - 1) * 100).toFixed(2);
+  const cagr3 = +((Math.pow(mult3, 1 / 3) - 1) * 100).toFixed(2);
+  const cagr2 = +((Math.pow(mult2, 1 / 2) - 1) * 100).toFixed(2);
   const cumulativePct = +((mult20 - 1) * 100).toFixed(1);
   const value10k = Math.round(10000 * mult20);
   const value10k_10yr = Math.round(10000 * mult10);
+  const value10k_5yr = Math.round(10000 * mult5);
+  const value10k_3yr = Math.round(10000 * mult3);
+  const value10k_2yr = Math.round(10000 * mult2);
 
   return {
     cagr20,
     cagr10,
     cagr5,
+    cagr3,
+    cagr2,
     cumulativePct,
     value10k,
     value10k_10yr,
+    value10k_5yr,
+    value10k_3yr,
+    value10k_2yr,
     posYears,
     bestYear,
     worstYear
@@ -1659,6 +1674,9 @@ const UK_PASSIVE_INDEXES = RAW_INDEXES.map(idx => {
     const fundMetrics = computeMetrics(fundYearly);
     const alphaAnnual = +(fundMetrics.cagr20 - indexMetrics.cagr20).toFixed(2);
     const alpha10Yr = +(fundMetrics.cagr10 - indexMetrics.cagr10).toFixed(2);
+    const alpha5Yr = +(fundMetrics.cagr5 - indexMetrics.cagr5).toFixed(2);
+    const alpha3Yr = +(fundMetrics.cagr3 - indexMetrics.cagr3).toFixed(2);
+    const alpha2Yr = +(fundMetrics.cagr2 - indexMetrics.cagr2).toFixed(2);
     const extraWealth10k = fundMetrics.value10k - indexMetrics.value10k;
 
     // Count how many years out of 20 (2007–2026) the fund beat the index
@@ -1673,6 +1691,9 @@ const UK_PASSIVE_INDEXES = RAW_INDEXES.map(idx => {
       metrics: fundMetrics,
       alphaAnnual,
       alpha10Yr,
+      alpha5Yr,
+      alpha3Yr,
+      alpha2Yr,
       extraWealth10k,
       yearsBeatIndex
     };
