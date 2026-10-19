@@ -80,7 +80,7 @@
             </span>
           </div>
           <p class="text-xs text-slate-500">
-            12 UK-Investable Benchmark Indexes • 20-Year Annual % Returns • 60 Outperforming Active, Investment Trust &amp; Factor Funds
+            15 UK-Investable Benchmark Indexes • 20-Year Annual % Returns • 75 Outperforming Active, Investment Trust &amp; Factor Funds
           </p>
         </div>
       </div>
@@ -103,7 +103,7 @@
 
         <button id="btn-toggle-all-catalog" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer">
           <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-          <span id="toggle-all-catalog-label">Full 12-Index Report View</span>
+          <span id="toggle-all-catalog-label">Full 15-Index Report View</span>
         </button>
 
         <button id="btn-export-csv" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition cursor-pointer">
@@ -138,8 +138,8 @@
       <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">UK Investable Indexes</span>
-          <div class="text-2xl font-extrabold text-slate-900 mt-1">12 Major Indexes</div>
-          <p class="text-xs text-slate-500 mt-1">US, Global, UK, Tech, Europe, Asia, EM &amp; Japan</p>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">15 Major Indexes</div>
+          <p class="text-xs text-slate-500 mt-1">US, Global, UK, India, China, LatAm, Europe &amp; Japan</p>
         </div>
         <div class="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
           <i data-lucide="globe-2" class="w-5 h-5"></i>
@@ -149,7 +149,7 @@
       <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Highest 20-Yr Passive Index</span>
-          <div class="text-2xl font-extrabold text-emerald-600 mt-1" id="kpi-best-index-cagr">16.19% p.a.</div>
+          <div class="text-2xl font-extrabold text-emerald-600 mt-1" id="kpi-best-index-cagr">17.55% p.a.</div>
           <p class="text-xs text-slate-500 mt-1" id="kpi-best-index-name">NASDAQ-100 Index (GBP)</p>
         </div>
         <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -160,7 +160,7 @@
       <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Outperforming Funds Analysed</span>
-          <div class="text-2xl font-extrabold text-indigo-600 mt-1">60 Top Funds</div>
+          <div class="text-2xl font-extrabold text-indigo-600 mt-1">75 Top Funds</div>
           <p class="text-xs text-slate-500 mt-1">Top 5 index-beating funds per benchmark</p>
         </div>
         <div class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -172,7 +172,7 @@
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Cheapest UK Tracker OCF</span>
           <div class="text-2xl font-extrabold text-slate-900 mt-1">0.03% – 0.32%</div>
-          <p class="text-xs text-slate-500 mt-1">Vanguard, iShares, Fidelity, HSBC, LGIM, SPDR</p>
+          <p class="text-xs text-slate-500 mt-1">Vanguard, iShares, Fidelity, HSBC, Franklin, LGIM</p>
         </div>
         <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
           <i data-lucide="percent" class="w-5 h-5"></i>
@@ -180,14 +180,14 @@
       </div>
     </section>
 
-    <!-- ================= SECTION 1: DIRECTORY OF ALL 12 UK PASSIVE TRACKER INDEXES ================= -->
+    <!-- ================= SECTION 1: DIRECTORY OF ALL 15 UK PASSIVE TRACKER INDEXES ================= -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
       <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-slate-50/60">
         <div>
           <div class="flex items-center gap-2">
             <span class="px-2 py-0.5 text-[11px] font-extrabold rounded bg-brand-600 text-white uppercase tracking-wider">Step 1</span>
             <h2 class="text-base sm:text-lg font-extrabold text-slate-900">
-              Select a UK-Investable Passive Tracker Index (or Compare All 12 Below)
+              Select a UK-Investable Passive Tracker Index (or Compare All 15 Below)
             </h2>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">
@@ -210,35 +210,35 @@
           </div>
 
           <div id="region-filter-bar" class="inline-flex flex-wrap gap-1 bg-slate-200/70 p-1 rounded-xl text-xs font-semibold">
-            <button data-filter="ALL" class="region-btn px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs transition cursor-pointer">All (12)</button>
+            <button data-filter="ALL" class="region-btn px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs transition cursor-pointer">All (15)</button>
             <button data-filter="Global" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">Global</button>
             <button data-filter="North America" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">US</button>
             <button data-filter="United Kingdom" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">UK</button>
-            <button data-filter="Other" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">Europe / Asia / EM</button>
+            <button data-filter="Other" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">India / China / LatAm / Europe</button>
           </div>
 
           <button id="btn-toggle-master-matrix" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition cursor-pointer">
             <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
-            <span id="master-matrix-btn-text">Show All 12 Indexes 20-Yr Matrix</span>
+            <span id="master-matrix-btn-text">Show All 15 Indexes 20-Yr Matrix</span>
           </button>
         </div>
       </div>
 
-      <!-- Grid of 12 Passive Index Cards -->
+      <!-- Grid of 15 Passive Index Cards -->
       <div id="index-cards-grid" class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         <!-- Populated by app.js -->
       </div>
 
-      <!-- Collapsible Master 20-Year Yearly Return Matrix for ALL 12 Passive Indexes -->
+      <!-- Collapsible Master 20-Year Yearly Return Matrix for ALL 15 Passive Indexes -->
       <div id="master-matrix-container" class="border-t border-slate-200 bg-slate-50/50 p-4 sm:p-5">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div>
             <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
               <i data-lucide="calendar-range" class="w-4 h-4 text-brand-600"></i>
-              <span>Master 20-Year Annual % Return Matrix — All 12 UK Passive Tracker Indexes (2006–2025 + 2026 YTD)</span>
+              <span>Master 20-Year Annual % Return Matrix — All 15 UK Passive Tracker Indexes (2006–2025 + 2026 YTD)</span>
             </h3>
             <p class="text-xs text-slate-500">
-              Complete year-by-year GBP (£) total returns across all 12 benchmark indexes. Click any row to load its Top 5 Outperforming Funds below.
+              Complete year-by-year GBP (£) total returns across all 15 benchmark indexes. Click any row to load its Top 5 Outperforming Funds below.
             </p>
           </div>
           <span class="text-[11px] font-mono text-slate-500">Scroll horizontally on smaller screens →</span>
@@ -448,14 +448,14 @@
 
     </div>
 
-    <!-- ================= SECTION 5: FULL 12-INDEX & 60-FUND COMPLETE CATALOG VIEW (TOGGLEABLE) ================= -->
+    <!-- ================= SECTION 5: FULL 15-INDEX & 75-FUND COMPLETE CATALOG VIEW (TOGGLEABLE) ================= -->
     <section id="all-indexes-full-catalog" class="hidden space-y-6">
       <div class="bg-indigo-900 text-white rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
             Complete Master Report
           </span>
-          <h2 class="text-xl font-black mt-1">All 12 UK Passive Tracker Indexes &amp; Their Top 5 Outperforming Funds (60 Funds Total)</h2>
+          <h2 class="text-xl font-black mt-1">All 15 UK Passive Tracker Indexes &amp; Their Top 5 Outperforming Funds (75 Funds Total)</h2>
           <p class="text-xs text-indigo-200 mt-0.5">
             Comprehensive side-by-side summary of every passive tracker index, its 20-year annual return series, and the 5 funds that delivered higher long-term growth.
           </p>

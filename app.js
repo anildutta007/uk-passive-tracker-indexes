@@ -153,16 +153,16 @@ function bindEvents() {
       if (container && label) {
         if (state.showMasterMatrix) {
           container.classList.remove("hidden");
-          label.textContent = "Hide All 12 Indexes 20-Yr Matrix";
+          label.textContent = "Hide All 15 Indexes 20-Yr Matrix";
         } else {
           container.classList.add("hidden");
-          label.textContent = "Show All 12 Indexes 20-Yr Matrix";
+          label.textContent = "Show All 15 Indexes 20-Yr Matrix";
         }
       }
     });
     // Set initial label
     const label = document.getElementById("master-matrix-btn-text");
-    if (label) label.textContent = "Hide All 12 Indexes 20-Yr Matrix";
+    if (label) label.textContent = "Hide All 15 Indexes 20-Yr Matrix";
   }
 
   // Overlay Fund selector on Yearly Bar Chart
@@ -211,7 +211,7 @@ function updateCatalogViewMode() {
   } else {
     singleContainer.classList.remove("hidden");
     allCatalogContainer.classList.add("hidden");
-    if (label) label.textContent = "Full 12-Index Report View";
+    if (label) label.textContent = "Full 15-Index Report View";
   }
   if (window.lucide) window.lucide.createIcons();
 }
@@ -865,7 +865,7 @@ function renderAllIndexesCatalog() {
       <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="bg-slate-900 text-white p-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span class="text-xs font-mono text-brand-400 font-bold">INDEX ${idxNum + 1} OF 12 • ${idx.category.toUpperCase()}</span>
+            <span class="text-xs font-mono text-brand-400 font-bold">INDEX ${idxNum + 1} OF 15 • ${idx.category.toUpperCase()}</span>
             <h3 class="text-lg font-black">${idx.name}</h3>
             <p class="text-xs text-slate-300">Cheapest UK Tracker: ${idx.cheapestTrackers[0].name} (${idx.cheapestTrackers[0].ticker} • OCF ${idx.cheapestTrackers[0].ocf.toFixed(2)}%)</p>
           </div>

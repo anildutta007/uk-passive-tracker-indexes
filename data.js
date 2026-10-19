@@ -1259,6 +1259,300 @@ const RAW_INDEXES = [
         strategyNote: "All-cap Japanese investment trust combining undervalued mid-cap industrial niche leaders with blue-chip exporters."
       }
     ]
+  },
+
+  // ============================================================================
+  // 13. MSCI INDIA / FTSE INDIA INDEX (GBP)
+  // ============================================================================
+  {
+    id: "india-index",
+    name: "MSCI India / FTSE India Index",
+    shortName: "India Equity Index (MSCI / NIFTY)",
+    region: "India (Emerging Asia)",
+    category: "Indian Equities",
+    currency: "GBP (£ Unhedged Total Return)",
+    constituentsCount: 146,
+    description: "Tracks large and mid-cap Indian companies (Reliance Industries, HDFC Bank, Infosys, ICICI Bank, Tata Consultancy Services, Bharti Airtel). Accessible to UK ISA/SIPP investors via low-cost UCITS ETFs, UK Unit Trusts, and LSE-listed Indian Investment Trusts.",
+    cheapestTrackers: [
+      { name: "Franklin FTSE India UCITS ETF (Acc)", ticker: "FRIN / FLXI", isin: "IE00BHZRQZ17", ocf: 0.19, provider: "Franklin Templeton", structure: "ETF" },
+      { name: "iShares MSCI India UCITS ETF (Acc)", ticker: "IIND / NDIA", isin: "IE00BZCQB185", ocf: 0.65, provider: "BlackRock iShares", structure: "ETF" },
+      { name: "Xtrackers MSCI India Swap UCITS ETF 1C", ticker: "XCX5 / XIND", isin: "LU0514695187", ocf: 0.75, provider: "DWS Xtrackers", structure: "ETF" }
+    ],
+    yearlyReturns: {
+      "2006": 32.8, "2007": 68.4, "2008": -51.2, "2009": 81.4, "2010": 24.5,
+      "2011": -36.4,"2012": 20.2, "2013": -5.6,  "2014": 31.4, "2015": -0.8,
+      "2016": 17.5, "2017": 26.8, "2018": -1.4,  "2019": 3.5,  "2020": 12.1,
+      "2021": 27.5, "2022": 3.8,  "2023": 14.2,  "2024": 15.8, "2025": 13.4,
+      "2026 YTD": 11.6
+    },
+    topFundsRaw: [
+      {
+        rank: 1,
+        name: "Jupiter India Fund (Class I Acc)",
+        house: "Jupiter Asset Management",
+        ticker: "GB00B4TZHH95",
+        isin: "GB00B4TZHH95",
+        vehicleType: "UK Unit Trust",
+        ocf: 0.99,
+        manager: "Avinash Vazirani",
+        targetCagr: 13.85,
+        beta: 0.96,
+        tilt: [4.2, 3.8, 2.5, 4.9, 3.4, 4.1, 3.6, 2.9, 4.5, 3.2],
+        strategyNote: "Growth-at-a-Reasonable-Price (GARP) UK Unit Trust investing across all-cap Indian equities, capturing domestic healthcare, financials, and infrastructure."
+      },
+      {
+        rank: 2,
+        name: "Ashoka India Equity Investment Trust PLC",
+        house: "WhiteOak Capital Management",
+        ticker: "AIE (LSE)",
+        isin: "GB00BF50VS41",
+        vehicleType: "UK Investment Trust",
+        ocf: 0.45,
+        manager: "Prashant Khemka & WhiteOak Team",
+        targetCagr: 13.45,
+        beta: 0.94,
+        tilt: [3.8, 3.2, 3.4, 4.1, 2.9, 3.5, 3.1, 2.8, 3.9, 3.0],
+        strategyNote: "LSE-listed UK Investment Trust with zero base management fee (performance-linked only), using proprietary OpcoFinco cash-flow valuation across Indian mid and large caps."
+      },
+      {
+        rank: 3,
+        name: "Stewart Investors Indian Subcontinent Sustainability Fund (Class B Acc)",
+        house: "Stewart Investors (First Sentier)",
+        ticker: "GB00B1FXTF86",
+        isin: "GB00B1FXTF86",
+        vehicleType: "Active UK OEIC",
+        ocf: 0.93,
+        manager: "Sashi Reddy & David Gait",
+        targetCagr: 13.10,
+        beta: 0.85,
+        tilt: [3.5, 2.4, 6.2, 1.9, 4.5, 3.8, 2.7, 4.1, 2.9, 3.3],
+        strategyNote: "High-conviction quality steward focusing on family-backed Indian industrial, engineering, and consumer compounders (Mahindra & Mahindra, Tube Investments, HDFC)."
+      },
+      {
+        rank: 4,
+        name: "India Capital Growth Fund Limited",
+        house: "Ocean Dial Asset Management",
+        ticker: "IGC (LSE)",
+        isin: "GG00B0P6J834",
+        vehicleType: "UK Investment Trust",
+        ocf: 1.52,
+        manager: "Gaurav Narain",
+        targetCagr: 12.55,
+        beta: 1.03,
+        tilt: [2.9, 3.4, -0.8, 4.2, 2.5, 3.1, 2.8, 1.9, 3.6, 2.7],
+        strategyNote: "LSE-listed investment trust specialising in under-researched Indian mid-cap and small-cap domestic consumption and manufacturing winners."
+      },
+      {
+        rank: 5,
+        name: "abrdn New India Investment Trust PLC",
+        house: "abrdn",
+        ticker: "ANII (LSE)",
+        isin: "GB0006048770",
+        vehicleType: "UK Investment Trust",
+        ocf: 1.00,
+        manager: "Kristy Fong & James Thom",
+        targetCagr: 11.95,
+        beta: 0.91,
+        tilt: [2.2, 2.1, 3.5, 1.8, 2.7, 2.4, 2.0, 2.9, 2.1, 2.3],
+        strategyNote: "Defensive high-quality UK Investment Trust backing India's banking, digital services, and property urbanisation leaders."
+      }
+    ]
+  },
+
+  // ============================================================================
+  // 14. MSCI CHINA / FTSE CHINA INDEX (GBP)
+  // ============================================================================
+  {
+    id: "china-index",
+    name: "MSCI China / FTSE China Index",
+    shortName: "China Equity Index (MSCI / FTSE)",
+    region: "China (Greater China)",
+    category: "Chinese Equities",
+    currency: "GBP (£ Unhedged Total Return)",
+    constituentsCount: 598,
+    description: "Covers Chinese H-shares, A-shares, Red Chips, and offshore ADRs (Tencent, Alibaba, Meituan, PDD, BYD, China Construction Bank, Xiaomi). Investable in the UK via passive ETFs, UK OEICs, and specialist LSE Investment Trusts.",
+    cheapestTrackers: [
+      { name: "Franklin FTSE China UCITS ETF (Acc)", ticker: "FRCH / FLXC", isin: "IE00BHZRR147", ocf: 0.19, provider: "Franklin Templeton", structure: "ETF" },
+      { name: "HSBC MSCI China UCITS ETF", ticker: "HMCH", isin: "IE00B44T3H88", ocf: 0.28, provider: "HSBC", structure: "ETF" },
+      { name: "iShares MSCI China UCITS ETF (Acc)", ticker: "ICHN / CNYA", isin: "IE00BJ5JPG56", ocf: 0.28, provider: "BlackRock iShares", structure: "ETF" }
+    ],
+    yearlyReturns: {
+      "2006": 62.4, "2007": 63.8, "2008": -31.8, "2009": 45.2, "2010": 8.1,
+      "2011": -17.8,"2012": 17.4, "2013": 1.9,   "2014": 14.7, "2015": -2.4,
+      "2016": 20.4, "2017": 41.2, "2018": -13.8, "2019": 18.7, "2020": 25.4,
+      "2021": -20.8,"2022": -12.1,"2023": -15.8, "2024": 21.4, "2025": 14.2,
+      "2026 YTD": 12.4
+    },
+    topFundsRaw: [
+      {
+        rank: 1,
+        name: "Fidelity China Special Situations PLC",
+        house: "Fidelity International",
+        ticker: "FCSS (LSE)",
+        isin: "GB00B62Z3C74",
+        vehicleType: "UK Investment Trust",
+        ocf: 0.98,
+        manager: "Dale Nicholls",
+        targetCagr: 11.45,
+        beta: 1.04,
+        tilt: [3.8, 3.2, 1.4, 4.5, 2.9, 3.6, 3.1, 2.4, 3.9, 2.8],
+        strategyNote: "The UK's flagship FTSE 250 China Investment Trust, leveraging on-the-ground Shanghai/Hong Kong research, mid-cap private innovators, and unlisted pre-IPO stakes."
+      },
+      {
+        rank: 2,
+        name: "FSSA Greater China Growth Fund (Class B Acc GBP)",
+        house: "First Sentier Investors (FSSA)",
+        ticker: "GB0033874322",
+        isin: "GB0033874322",
+        vehicleType: "Active UK OEIC",
+        ocf: 1.07,
+        manager: "Martin Lau & Helen Chen",
+        targetCagr: 10.85,
+        beta: 0.86,
+        tilt: [3.2, 2.5, 5.4, 2.1, 4.2, 3.1, 2.8, 4.6, 2.7, 3.0],
+        strategyNote: "Conservative, quality-first UK OEIC avoiding heavily indebted state-owned enterprises in favour of cash-generative private Chinese & Taiwanese franchises."
+      },
+      {
+        rank: 3,
+        name: "Schroder ISF China Opportunities / Asian China Fund (GBP)",
+        house: "Schroders",
+        ticker: "LU0244354667",
+        isin: "LU0244354667",
+        vehicleType: "Active UCITS Fund",
+        ocf: 1.02,
+        manager: "Louisa Lo",
+        targetCagr: 10.35,
+        beta: 0.96,
+        tilt: [2.6, 2.4, 2.2, 2.9, 2.5, 2.7, 2.1, 2.3, 2.8, 2.2],
+        strategyNote: "Targets structural growth in Chinese electric vehicle supply chains, industrial automation, and domestic brand upgrades."
+      },
+      {
+        rank: 4,
+        name: "Invesco China Equity Fund (UK) (No Trail Acc)",
+        house: "Invesco",
+        ticker: "GB0033028332",
+        isin: "GB0033028332",
+        vehicleType: "UK ICVC OEIC",
+        ocf: 0.94,
+        manager: "Raymond Ma",
+        targetCagr: 9.85,
+        beta: 0.98,
+        tilt: [2.1, 2.0, 1.6, 2.5, 1.9, 2.2, 2.0, 1.8, 2.3, 1.9],
+        strategyNote: "Bottom-up UK OEIC focusing on Chinese internet platforms, healthcare, and high-dividend cash-returning leaders."
+      },
+      {
+        rank: 5,
+        name: "Baillie Gifford China Growth Trust PLC / China Fund (Class B Acc)",
+        house: "Baillie Gifford",
+        ticker: "BGCG (LSE) / GB00B39RMM81",
+        isin: "GB0003656021",
+        vehicleType: "UK Investment Trust / OEIC",
+        ocf: 0.76,
+        manager: "Sophie Earnshaw & Linda Lin",
+        targetCagr: 9.55,
+        beta: 1.02,
+        tilt: [1.8, 2.4, -0.5, 2.9, 1.7, 2.1, 2.3, 1.1, 2.5, 1.8],
+        strategyNote: "LSE-listed Investment Trust & UK OEIC backing China's next-decade technology, green energy, and advanced manufacturing leaders."
+      }
+    ]
+  },
+
+  // ============================================================================
+  // 15. MSCI EM LATIN AMERICA INDEX (GBP)
+  // ============================================================================
+  {
+    id: "latin-america-index",
+    name: "MSCI EM Latin America Index",
+    shortName: "Latin America Index (Brazil / Mexico)",
+    region: "Latin America",
+    category: "Latin American Equities",
+    currency: "GBP (£ Unhedged Total Return)",
+    constituentsCount: 91,
+    description: "Captures large and mid-cap equities across 5 Emerging Markets countries in Latin America (Brazil ~60%, Mexico ~27%, Chile, Peru, Colombia), led by Vale, Petrobras, Itaú Unibanco, Nu Holdings, Walmart de México, and Grupo México.",
+    cheapestTrackers: [
+      { name: "iShares MSCI EM Latin America UCITS ETF (Dist)", ticker: "LTAM / IMLU", isin: "IE00B27YCK28", ocf: 0.20, provider: "BlackRock iShares", structure: "ETF" },
+      { name: "Amundi MSCI EM Latin America UCITS ETF (GBP)", ticker: "ALAG / ALAT", isin: "LU1681045024", ocf: 0.20, provider: "Amundi ETF", structure: "ETF" },
+      { name: "HSBC MSCI EM Latin America UCITS ETF", ticker: "HMLA", isin: "IE00B4TS3815", ocf: 0.60, provider: "HSBC", structure: "ETF" }
+    ],
+    yearlyReturns: {
+      "2006": 39.2, "2007": 48.1, "2008": -34.6, "2009": 84.2, "2010": 18.4,
+      "2011": -18.6,"2012": 4.1,  "2013": -14.9, "2014": -6.8, "2015": -27.2,
+      "2016": 56.4, "2017": 13.1, "2018": -0.6,  "2019": 13.0, "2020": -16.4,
+      "2021": -7.2, "2022": 22.8, "2023": 25.4,  "2024": -18.2,"2025": 14.6,
+      "2026 YTD": 10.4
+    },
+    topFundsRaw: [
+      {
+        rank: 1,
+        name: "BlackRock Latin American Investment Trust PLC",
+        house: "BlackRock",
+        ticker: "BRLA (LSE)",
+        isin: "GB0005058408",
+        vehicleType: "UK Investment Trust",
+        ocf: 1.13,
+        manager: "Sam Vecht & Christoph Brinkmann",
+        targetCagr: 8.45,
+        beta: 0.97,
+        tilt: [3.2, 2.8, 2.4, 3.5, 2.9, 3.1, 2.6, 2.7, 3.3, 2.5],
+        strategyNote: "The UK's dedicated LSE-listed Latin American Investment Trust, paying a regular quarterly dividend equal to 1.25% of USD NAV while actively rotating between Brazil and Mexico nearshoring winners."
+      },
+      {
+        rank: 2,
+        name: "abrdn Latin American Equity Fund (Class I Acc)",
+        house: "abrdn",
+        ticker: "GB00B4R0SD95",
+        isin: "GB00B4R0SD95",
+        vehicleType: "Active UK OEIC",
+        ocf: 1.09,
+        manager: "abrdn Global Emerging Markets Team",
+        targetCagr: 7.95,
+        beta: 0.93,
+        tilt: [2.8, 2.4, 3.1, 2.2, 2.9, 2.5, 2.3, 2.8, 2.6, 2.2],
+        strategyNote: "UK-domiciled OEIC emphasizing quality balance sheets, private-sector Brazilian fintech/banks (Itaú, Raia Drogasil), and Mexican industrial logistics."
+      },
+      {
+        rank: 3,
+        name: "Schroder ISF Latin American Fund (Class C Acc GBP)",
+        house: "Schroders",
+        ticker: "LU0248178906",
+        isin: "LU0248178906",
+        vehicleType: "Active UCITS Fund",
+        ocf: 1.05,
+        manager: "Tom Wilson & Pablo Riveroll",
+        targetCagr: 7.65,
+        beta: 0.98,
+        tilt: [2.4, 2.2, 1.8, 2.7, 2.1, 2.5, 2.2, 1.9, 2.4, 2.0],
+        strategyNote: "Blends top-down country/currency macro allocation with bottom-up stock selection across Brazil, Mexico, Chile, and Peru copper producers."
+      },
+      {
+        rank: 4,
+        name: "JPMorgan Latin America Equity Fund (Class C Acc GBP)",
+        house: "J.P. Morgan Asset Management",
+        ticker: "LU0822047683",
+        isin: "LU0822047683",
+        vehicleType: "Active UCITS Fund",
+        ocf: 0.96,
+        manager: "Oleg Biryulyov & Luis Carrillo",
+        targetCagr: 7.35,
+        beta: 0.96,
+        tilt: [2.1, 1.9, 1.7, 2.3, 1.8, 2.2, 1.9, 1.6, 2.1, 1.8],
+        strategyNote: "Focuses on high-return-on-equity Latin American consumer, banking, and infrastructure compounders."
+      },
+      {
+        rank: 5,
+        name: "Templeton Latin America Fund (Class W Acc GBP)",
+        house: "Franklin Templeton",
+        ticker: "LU0768356916",
+        isin: "LU0768356916",
+        vehicleType: "Active UCITS Fund",
+        ocf: 1.05,
+        manager: "Gustavo Stival",
+        targetCagr: 6.95,
+        beta: 0.95,
+        tilt: [1.7, 1.6, 1.5, 1.9, 1.5, 1.8, 1.6, 1.4, 1.7, 1.5],
+        strategyNote: "High-conviction dividend and value discipline capturing commodity super-cycles and domestic interest-rate easing cycles in Brazil and Chile."
+      }
+    ]
   }
 ];
 
