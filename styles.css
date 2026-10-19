@@ -1,35 +1,77 @@
-/* UK Passive Tracker Indexes & Top 5 Outperforming Funds Explorer - Custom Styles */
+/* UK Passive Tracker Indexes & Top 5 Outperforming Funds Explorer */
+/* UI Redesign Spec Design Tokens & Styles */
 
 :root {
-  --brand-primary: #0284c7;
-  --brand-dark: #0f172a;
+  --bg: oklch(0.975 0.008 85);        /* warm paper */
+  --fg: oklch(0.22 0.03 250);         /* ink navy */
+  --card: oklch(0.995 0.004 85);
+  --muted: oklch(0.94 0.012 85);
+  --muted-fg: oklch(0.5 0.02 250);
+  --border: oklch(0.89 0.015 85);
+  --primary: oklch(0.32 0.07 245);    /* deep navy */
+  --primary-fg: oklch(0.98 0.005 85);
+  --positive: oklch(0.55 0.13 158);   /* green */
+  --positive-soft: oklch(0.93 0.05 158);
+  --negative: oklch(0.58 0.19 27);    /* red */
+  --negative-soft: oklch(0.94 0.05 27);
+  
+  --chart-1: oklch(0.32 0.07 245);    /* index */
+  --chart-2: oklch(0.62 0.15 40);     /* fund #1 */
+  --chart-3: oklch(0.55 0.13 158);    /* fund #2 */
+  --chart-4: oklch(0.72 0.14 85);     /* fund #3 */
+  --chart-5: oklch(0.55 0.15 300);    /* fund #4 */
+  --chart-6: oklch(0.6 0.12 200);     /* fund #5 */
+  
+  --gradient-hero: linear-gradient(135deg, oklch(0.28 0.07 245), oklch(0.36 0.08 230));
+  --shadow-card: 0 1px 2px oklch(0.22 0.03 250 / 6%), 0 8px 24px -12px oklch(0.22 0.03 250 / 18%);
+  --radius: 0.75rem;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
 }
 
-/* Custom Scrollbar for wide 20-year tables */
+.font-serif-title {
+  font-family: 'Fraunces', serif;
+}
+
+.font-mono-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card base */
+.spec-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+/* Custom Scrollbar for wide tables and sidebar */
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+  height: 7px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--muted);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--border);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--muted-fg);
 }
 
-/* Sticky left column in 20-year horizontal tables */
+/* Sticky column in matrix */
 .sticky-col {
   position: sticky;
   left: 0;
@@ -37,48 +79,42 @@ body {
 }
 
 .sticky-col-shadow {
-  box-shadow: 4px 0 8px -4px rgba(15, 23, 42, 0.12);
+  box-shadow: 4px 0 10px -3px oklch(0.22 0.03 250 / 12%);
 }
 
-/* Return Heatmap Pill Cells */
-.ret-pos-strong {
-  background-color: #d1fae5;
-  color: #065f46;
-  font-weight: 700;
-}
-
-.ret-pos-mid {
-  background-color: #ecfdf5;
-  color: #047857;
+/* Toast styling */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--primary);
+  color: var(--primary-fg);
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
   font-weight: 600;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
 }
 
-.ret-neg-mid {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  font-weight: 600;
+#toast.hidden {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
-.ret-neg-strong {
-  background-color: #fee2e2;
-  color: #991b1b;
-  font-weight: 700;
+#toast.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Outperformance highlight badge */
-.beat-index-cell {
-  position: relative;
-}
-
-.beat-index-cell::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 5px;
-  height: 5px;
-  border-radius: 9999px;
-  background-color: #10b981;
+/* Mini sparklines in sidebar */
+.sparkline-bar {
+  display: inline-block;
+  width: 3px;
+  margin: 0 0.5px;
+  border-radius: 1px;
 }
 
 /* Print optimization */

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UK Passive Tracker Indexes & Top 5 Outperforming Funds (20-Year Returns)</title>
+  <title>UK Passive Tracker Indexes &amp; Top 5 Outperforming Funds (20-Year Returns)</title>
   <meta name="description" content="Complete directory of UK-investable passive tracker indexes showing 20-year annual percentage returns (2007–2026, including 2026), cheapest ETF/OEIC trackers, and the Top 5 funds that achieved higher growth than each index.">
 
   <!-- Tailwind CSS CDN -->
@@ -13,29 +13,19 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          },
-          colors: {
-            brand: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
-              800: '#075985',
-              900: '#0c4a6e'
-            }
+            serif: ['Fraunces', 'serif'],
+            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace']
           }
         }
       }
     }
   </script>
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Fraunces, IBM Plex Sans, IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -45,442 +35,413 @@
 
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+<body class="min-h-screen flex flex-col antialiased">
 
-  <!-- Regulatory & Educational Banner -->
-  <div class="bg-amber-500/15 border-b border-amber-300/60 text-amber-950 px-4 py-2 text-xs no-print">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/25 text-amber-900 uppercase tracking-wider">
-          <i data-lucide="shield-alert" class="w-3 h-3 mr-1"></i> FCA Educational Disclaimer
-        </span>
-        <span class="text-slate-700">
-          <strong>Informational & Self-Study Model:</strong> All 20-year returns (2007–2026, including 2026) are in GBP (£) Total Return. Past performance does not guarantee future returns.
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden">Copied to clipboard</div>
+
+  <!-- 2. Disclaimer Bar (Thin, Dismissible) -->
+  <aside id="disclaimer-bar" class="border-b text-xs px-4 py-2 no-print relative transition-all duration-200" style="background-color: var(--muted); border-color: var(--border); color: var(--fg);">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <i data-lucide="info" class="w-4 h-4 shrink-0 text-slate-600"></i>
+        <span class="truncate sm:whitespace-normal">
+          <strong>FCA Educational Disclaimer — Informational &amp; Self-Study Model:</strong> All 20-year returns (2007–2026, including 2026) are in GBP (£) Total Return. Past performance does not guarantee future returns.
         </span>
       </div>
-      <span class="font-mono text-[11px] font-semibold text-slate-600">ISA · SIPP · GIA Investable Universe (UK)</span>
+      <button id="btn-dismiss-disclaimer" type="button" class="text-slate-500 hover:text-slate-900 p-1 rounded transition shrink-0 cursor-pointer" title="Dismiss for session">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
     </div>
-  </div>
+  </aside>
 
-  <!-- Sticky Header -->
-  <header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
-      <!-- Brand Title -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-700 via-brand-600 to-emerald-600 flex items-center justify-center text-white shadow-sm">
-          <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-        </div>
+  <!-- 3. Header + KPI Tiles (Dark Navy Gradient) -->
+  <header class="text-white py-6 px-4 sm:px-6 lg:px-8 border-b" style="background: var(--gradient-hero); border-color: var(--border);">
+    <div class="max-w-7xl mx-auto space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
-              UK Passive Tracker Indexes <span class="text-brand-600">&amp; Top 5 Alpha Funds</span>
-            </h1>
-            <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-              20-Year Track Record (2007–2026)
-            </span>
+          <div class="text-[11px] font-bold uppercase tracking-widest text-slate-300 font-mono">
+            ISA · SIPP · GIA Investable Universe (UK)
           </div>
-          <p class="text-xs text-slate-500">
-            15 UK-Investable Benchmark Indexes • 20-Year Annual % Returns • 75 Outperforming Active, Investment Trust &amp; Factor Funds
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-serif-title mt-1 text-white">
+            UK Passive Tracker Indexes &amp; Top 5 Alpha Funds
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl">
+            Directory of UK-investable passive benchmark indexes, cheapest ISA/SIPP trackers, and the Top 5 funds achieving higher 20-year compounded growth.
           </p>
         </div>
+
+        <!-- Live Visitor Counter Badge -->
+        <div id="visitor-counter-badge" class="self-start sm:self-center inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-xs border border-white/15 text-xs text-white" title="Live visitors to explorer">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+          <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-300"></i>
+          <span class="text-slate-300">Visitors:</span>
+          <span id="visitor-count-number" class="font-bold font-mono-num text-white">1</span>
+        </div>
       </div>
 
-      <!-- Action Controls -->
-      <div class="flex items-center gap-2 flex-wrap no-print">
-        <!-- Investment Capital Selector -->
-        <div class="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs">
-          <i data-lucide="pound-sterling" class="w-3.5 h-3.5 text-brand-600"></i>
-          <span class="font-semibold text-slate-600">Initial Lump Sum:</span>
-          <select id="lump-sum-select" class="bg-white border border-slate-300 rounded px-2 py-0.5 font-bold text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand-500">
-            <option value="1000">£1,000</option>
-            <option value="5000">£5,000</option>
-            <option value="10000" selected>£10,000</option>
-            <option value="25000">£25,000</option>
-            <option value="50000">£50,000</option>
-            <option value="100000">£100,000</option>
-          </select>
+      <!-- 4 KPI Tiles Row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-1">
+        <!-- Tile 1 -->
+        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">UK Investable Indexes</span>
+          <div class="text-xl sm:text-2xl font-black mt-1 text-white">15 Major Indexes</div>
+          <p class="text-[11px] text-slate-300 mt-0.5">US, Global, UK, India, China, LatAm, Europe &amp; Japan</p>
         </div>
 
-        <button id="btn-toggle-all-catalog" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer">
-          <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-          <span id="toggle-all-catalog-label">Full 15-Index Report View</span>
-        </button>
+        <!-- Tile 2 -->
+        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Highest 20-Yr Passive Index</span>
+          <div class="text-xl sm:text-2xl font-black text-emerald-300 mt-1 font-mono-num" id="kpi-best-index-cagr">19.27% p.a.</div>
+          <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="kpi-best-index-name">NASDAQ-100 Index (10Y: 21.6%) · £339,109 on £10k</p>
+        </div>
 
-        <button id="btn-export-csv" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition cursor-pointer">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
-          <span>Export 20-Yr CSV</span>
-        </button>
+        <!-- Tile 3 -->
+        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Outperforming Funds Analysed</span>
+          <div class="text-xl sm:text-2xl font-black text-amber-300 mt-1">75 Top Funds</div>
+          <p class="text-[11px] text-slate-300 mt-0.5">Top 5 index-beating funds per benchmark</p>
+        </div>
 
-        <button onclick="window.print()" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition cursor-pointer">
-          <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
-          <span class="hidden sm:inline">Print</span>
-        </button>
-
-        <!-- Prominent Live Visitor Counter Badge -->
-        <div id="visitor-counter-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs shadow-2xs transition" title="Live visitors to UK Passive Tracker Indexes Explorer">
-          <span class="relative flex h-2 w-2 flex-shrink-0" title="Live visitor tracking active">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0"></i>
-          <span class="text-slate-500 font-medium">Visitors:</span>
-          <span id="visitor-count-number" class="font-extrabold text-slate-900 font-mono tabular-nums">1</span>
+        <!-- Tile 4 -->
+        <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3.5 border border-white/15">
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300 block font-mono">Cheapest UK Tracker OCF</span>
+          <div class="text-xl sm:text-2xl font-black text-white mt-1 font-mono-num">0.03% – 0.32%</div>
+          <p class="text-[11px] text-slate-300 mt-0.5">Vanguard, iShares, Fidelity, HSBC, Franklin, LGIM</p>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-    <!-- ================= TOP KPI SUMMARY RIBBON ================= -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">UK Investable Indexes</span>
-          <div class="text-2xl font-extrabold text-slate-900 mt-1">15 Major Indexes</div>
-          <p class="text-xs text-slate-500 mt-1">US, Global, UK, India, China, LatAm, Europe &amp; Japan</p>
-        </div>
-        <div class="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
-          <i data-lucide="globe-2" class="w-5 h-5"></i>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Highest 20-Yr Passive Index</span>
-          <div class="text-2xl font-extrabold text-emerald-600 mt-1" id="kpi-best-index-cagr">17.55% p.a.</div>
-          <p class="text-xs text-slate-500 mt-1" id="kpi-best-index-name">NASDAQ-100 Index (GBP)</p>
-        </div>
-        <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-          <i data-lucide="trending-up" class="w-5 h-5"></i>
+  <!-- 4. Sticky Global Control Bar -->
+  <nav id="sticky-control-bar" class="sticky top-0 z-30 border-b backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2.5 no-print" style="background-color: oklch(0.995 0.004 85 / 92%); border-color: var(--border);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Left: Period Toggle Segmented Buttons -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs font-bold uppercase tracking-wider font-mono text-slate-500">Period:</span>
+        <div id="period-toggle-group" class="inline-flex rounded-lg p-0.5 border" style="background: var(--muted); border-color: var(--border);">
+          <button type="button" data-period="20Y" class="period-btn px-2.5 py-1 text-xs font-bold rounded-md transition cursor-pointer bg-white text-slate-900 shadow-xs">20Y</button>
+          <button type="button" data-period="10Y" class="period-btn px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer text-slate-600 hover:text-slate-900">10Y</button>
+          <button type="button" data-period="5Y" class="period-btn px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer text-slate-600 hover:text-slate-900">5Y</button>
+          <button type="button" data-period="3Y" class="period-btn px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer text-slate-600 hover:text-slate-900">3Y</button>
+          <button type="button" data-period="2Y" class="period-btn px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer text-slate-600 hover:text-slate-900">2Y</button>
+          <button type="button" data-period="2026" class="period-btn px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer text-slate-600 hover:text-slate-900">2026</button>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Outperforming Funds Analysed</span>
-          <div class="text-2xl font-extrabold text-indigo-600 mt-1">75 Top Funds</div>
-          <p class="text-xs text-slate-500 mt-1">Top 5 index-beating funds per benchmark</p>
-        </div>
-        <div class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-          <i data-lucide="award" class="w-5 h-5"></i>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-2xs flex items-start justify-between">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Cheapest UK Tracker OCF</span>
-          <div class="text-2xl font-extrabold text-slate-900 mt-1">0.03% – 0.32%</div>
-          <p class="text-xs text-slate-500 mt-1">Vanguard, iShares, Fidelity, HSBC, Franklin, LGIM</p>
-        </div>
-        <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-          <i data-lucide="percent" class="w-5 h-5"></i>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= SECTION 1: DIRECTORY OF ALL 15 UK PASSIVE TRACKER INDEXES ================= -->
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-      <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-slate-50/60">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 text-[11px] font-extrabold rounded bg-brand-600 text-white uppercase tracking-wider">Step 1</span>
-            <h2 class="text-base sm:text-lg font-extrabold text-slate-900">
-              Select a UK-Investable Passive Tracker Index (or Compare All 15 Below)
-            </h2>
+      <!-- Right: Invest £ Amount Input + CSV Export -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-1.5 text-xs font-medium">
+          <label for="invest-amount-input" class="font-bold text-slate-700">Invest £:</label>
+          <div class="relative">
+            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 font-bold text-slate-500 font-mono">£</span>
+            <input id="invest-amount-input" type="number" step="1000" min="0" value="10000" class="pl-6 pr-2.5 py-1 rounded-lg border font-mono font-bold text-xs w-28 focus:outline-none focus:ring-2 focus:ring-slate-700" style="background: var(--card); border-color: var(--border);" />
           </div>
-          <p class="text-xs text-slate-500 mt-0.5">
-            Click any passive index card below to inspect its 20-year annual percentage returns (2007–2026, including 2026) and the Top 5 funds that achieved higher growth.
-          </p>
+          <span class="hidden md:inline text-[11px] text-slate-500">All £ values and charts update live.</span>
         </div>
 
-        <!-- Filter Pills & Sort Controls -->
-        <div class="flex flex-wrap items-center gap-2 no-print">
-          <div class="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
-            <i data-lucide="arrow-down-wide-narrow" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span class="font-semibold text-slate-600">Sort:</span>
-            <select id="index-sort-select" class="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer">
-              <option value="cagr20_desc" selected>20-Yr Return (High → Low)</option>
-              <option value="cagr10_desc">10-Yr Return (High → Low)</option>
-              <option value="cagr5_desc">5-Yr Return (High → Low)</option>
-              <option value="cagr3_desc">3-Yr Return (High → Low)</option>
-              <option value="cagr2_desc">2-Yr Return (High → Low)</option>
+        <button id="btn-export-csv" type="button" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border bg-white hover:bg-slate-50 text-slate-700 transition cursor-pointer" style="border-color: var(--border);">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span>Export CSV</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 5. Main Content with Tabs (Explore one index | Compare all 15) -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 space-y-4">
+    <!-- Tab Navigation -->
+    <div class="flex items-center border-b no-print" style="border-color: var(--border);">
+      <button id="tab-btn-explore" type="button" class="tab-btn active px-4 py-2.5 text-sm font-bold border-b-2 -mb-px flex items-center gap-2 cursor-pointer transition" style="border-color: var(--primary); color: var(--primary);">
+        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+        <span>Explore one index</span>
+      </button>
+      <button id="tab-btn-compare" type="button" class="tab-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px border-transparent text-slate-500 hover:text-slate-900 flex items-center gap-2 cursor-pointer transition">
+        <i data-lucide="git-compare" class="w-4 h-4"></i>
+        <span>Compare all 15</span>
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: EXPLORE ONE INDEX (SIDEBAR + DETAIL) ================= -->
+    <section id="tab-explore" class="block">
+      <div class="flex flex-col lg:flex-row items-start gap-6">
+        
+        <!-- 6.1 Left Sidebar (Sticky, own scroll on desktop ≈320px) -->
+        <aside class="w-full lg:w-80 shrink-0 spec-card p-3.5 space-y-3 lg:sticky lg:top-16 lg:max-h-[calc(100vh-5.5rem)] lg:overflow-y-auto custom-scrollbar">
+          <!-- Search box -->
+          <div class="relative">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input id="sidebar-search-input" type="text" placeholder="Search indexes, tickers..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border focus:outline-none focus:ring-1 focus:ring-slate-700" style="background: var(--bg); border-color: var(--border);" />
+          </div>
+
+          <!-- Region chips -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Region:</span>
+            <div id="sidebar-region-chips" class="flex flex-wrap gap-1">
+              <button data-region="All" class="sidebar-region-chip px-2 py-0.5 text-[11px] font-bold rounded bg-slate-900 text-white cursor-pointer transition">All (15)</button>
+              <button data-region="Global" class="sidebar-region-chip px-2 py-0.5 text-[11px] font-semibold rounded bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer transition">Global</button>
+              <button data-region="US" class="sidebar-region-chip px-2 py-0.5 text-[11px] font-semibold rounded bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer transition">US</button>
+              <button data-region="UK" class="sidebar-region-chip px-2 py-0.5 text-[11px] font-semibold rounded bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer transition">UK</button>
+              <button data-region="Other" class="sidebar-region-chip px-2 py-0.5 text-[11px] font-semibold rounded bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer transition">India / China / LatAm / Europe / Asia</button>
+            </div>
+          </div>
+
+          <!-- Count + Sort dropdown -->
+          <div class="flex items-center justify-between gap-2 pt-1 border-t" style="border-color: var(--border);">
+            <span id="sidebar-index-count" class="text-xs font-bold text-slate-600">15 indexes</span>
+            <select id="sidebar-sort-select" class="text-xs font-bold bg-transparent border rounded px-1.5 py-0.5 cursor-pointer focus:outline-none" style="border-color: var(--border);">
+              <option value="period_desc">Return (High → Low)</option>
+              <option value="cagr20_desc">20Y Return (High → Low)</option>
+              <option value="cagr10_desc">10Y Return (High → Low)</option>
+              <option value="cagr5_desc">5Y Return (High → Low)</option>
+              <option value="cagr3_desc">3Y Return (High → Low)</option>
+              <option value="cagr2_desc">2Y Return (High → Low)</option>
               <option value="ytd_desc">2026 Return (High → Low)</option>
               <option value="ocf_asc">Cheapest OCF (Low → High)</option>
             </select>
           </div>
 
-          <div id="region-filter-bar" class="inline-flex flex-wrap gap-1 bg-slate-200/70 p-1 rounded-xl text-xs font-semibold">
-            <button data-filter="ALL" class="region-btn px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs transition cursor-pointer">All (15)</button>
-            <button data-filter="Global" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">Global</button>
-            <button data-filter="North America" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">US</button>
-            <button data-filter="United Kingdom" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">UK</button>
-            <button data-filter="Other" class="region-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">India / China / LatAm / Europe</button>
+          <!-- 15 Compact Index Rows -->
+          <div id="sidebar-index-list" class="space-y-1.5 pt-1">
+            <!-- Populated by app.js -->
           </div>
+        </aside>
 
-          <button id="btn-toggle-master-matrix" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition cursor-pointer">
-            <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
-            <span id="master-matrix-btn-text">Show All 15 Indexes 20-Yr Matrix</span>
-          </button>
-        </div>
-      </div>
+        <!-- 6.2 Detail Panel for Selected Index -->
+        <div class="flex-1 w-full space-y-6 min-w-0">
+          
+          <!-- Selected Index Header Card -->
+          <section class="spec-card p-5 space-y-4">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span id="detail-category-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono" style="background: var(--muted); color: var(--fg);">Category</span>
+              <span id="detail-region-badge" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono bg-slate-100 text-slate-600">Region</span>
+              <span id="detail-constituents-badge" class="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-100 text-slate-600">Constituents</span>
+              <span id="detail-currency-badge" class="px-2 py-0.5 text-[10px] font-mono rounded text-emerald-800 bg-emerald-50 border border-emerald-200">GBP (£ Total Return)</span>
+            </div>
 
-      <!-- Grid of 15 Passive Index Cards -->
-      <div id="index-cards-grid" class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
-        <!-- Populated by app.js -->
-      </div>
+            <div>
+              <h2 id="detail-index-name" class="text-2xl sm:text-3xl font-extrabold font-serif-title text-slate-900 tracking-tight">Index Name</h2>
+              <p id="detail-index-desc" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Description...</p>
+            </div>
 
-      <!-- Collapsible Master 20-Year Yearly Return Matrix for ALL 15 Passive Indexes -->
-      <div id="master-matrix-container" class="border-t border-slate-200 bg-slate-50/50 p-4 sm:p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div>
-            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <i data-lucide="calendar-range" class="w-4 h-4 text-brand-600"></i>
-              <span>Master 20-Year Annual % Return Matrix — All 15 UK Passive Tracker Indexes (2007–2026, Including 2026)</span>
-            </h3>
-            <p class="text-xs text-slate-500">
-              Complete year-by-year GBP (£) total returns across all 15 benchmark indexes. Click any row to load its Top 5 Outperforming Funds below.
-            </p>
-          </div>
-          <span class="text-[11px] font-mono text-slate-500">Scroll horizontally on smaller screens →</span>
-        </div>
+            <!-- 4 Stat Tiles -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t" style="border-color: var(--border);">
+              <div class="p-3 rounded-lg" style="background: var(--muted);">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">20-Yr Annualised (CAGR)</span>
+                <span id="detail-tile-cagr20" class="text-lg sm:text-xl font-black font-mono-num text-emerald-700 block mt-0.5">19.27%</span>
+                <span class="text-[10px] text-slate-500 block">per year (2007–2026)</span>
+              </div>
 
-        <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-200 bg-white shadow-2xs">
-          <table class="min-w-full text-xs border-collapse">
-            <thead>
-              <tr id="master-matrix-thead" class="bg-slate-900 text-white font-bold text-[11px] uppercase tracking-wider">
-                <!-- Populated by app.js -->
-              </tr>
-            </thead>
-            <tbody id="master-matrix-tbody" class="divide-y divide-slate-200">
+              <div class="p-3 rounded-lg" style="background: var(--muted);">
+                <span id="detail-tile-grew-label" class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">£10,000 grew to (20Y)</span>
+                <span id="detail-tile-grew-val" class="text-lg sm:text-xl font-black font-mono-num text-slate-900 block mt-0.5">£339,109</span>
+                <span id="detail-tile-cum-pct" class="text-[10px] text-emerald-600 font-semibold block">+3,291.1% cumulative</span>
+              </div>
+
+              <div class="p-3 rounded-lg" style="background: var(--muted);">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">10Y / 5Y / 3Y / 2Y CAGR</span>
+                <span id="detail-tile-cagr-10-5" class="text-xs font-bold font-mono-num text-slate-800 block mt-0.5">21.58% · 17.15%</span>
+                <span id="detail-tile-cagr-3-2" class="text-[10px] text-slate-600 font-mono-num block mt-0.5">3Y: 25.58% · 2Y: 24.10%</span>
+              </div>
+
+              <div class="p-3 rounded-lg" style="background: var(--muted);">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-mono">Positive Calendar Years</span>
+                <span id="detail-tile-pos-years" class="text-lg sm:text-xl font-black font-mono-num text-slate-900 block mt-0.5">18 / 20</span>
+                <span id="detail-tile-pos-sub" class="text-[10px] text-slate-500 block truncate" title="90% · best 2023 +46.4% · worst 2022 -23.9%">90% · best +46.4% · worst -23.9%</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6.3 How to Invest in This Index in the UK -->
+          <section class="spec-card p-5 space-y-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                <span>How to invest in this index in the UK</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Cheapest ISA / SIPP passive tracker funds &amp; ETFs · Available on Vanguard, Hargreaves Lansdown, Interactive Investor, AJ Bell, Fidelity &amp; Trading 212
+              </p>
+            </div>
+
+            <!-- 3 Tracker Cards -->
+            <div id="detail-tracker-cards" class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <!-- Populated by app.js -->
-            </tbody>
-          </table>
+            </div>
+          </section>
+
+          <!-- 6.4 Charts (Bar Chart + Growth Line Chart) -->
+          <section class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <!-- Chart A: Annual % returns, 2007–2026 -->
+            <div class="spec-card p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Annual % returns (2007–2026)</h3>
+                    <p class="text-xs text-slate-500">Calendar year total return in GBP</p>
+                  </div>
+                </div>
+
+                <!-- Overlay Chips Row -->
+                <div id="bar-chart-overlay-chips" class="flex flex-wrap gap-1 mb-3">
+                  <!-- Populated by app.js -->
+                </div>
+              </div>
+
+              <div class="relative h-64 sm:h-72 w-full">
+                <canvas id="yearlyBarChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart B: Compounded Growth Line Chart -->
+            <div class="spec-card p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                  <h3 id="growth-chart-title" class="text-sm font-extrabold text-slate-900">£10,000 compounded growth (20Y)</h3>
+                  <span class="text-[10px] font-mono text-slate-400">Dividends reinvested, GBP</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">
+                  Index (dashed) vs Top 5 funds · click legend to toggle lines
+                </p>
+              </div>
+
+              <div class="relative h-64 sm:h-72 w-full">
+                <canvas id="growthChart"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6.5 Top 5 Funds Section -->
+          <section class="spec-card overflow-hidden">
+            <div class="p-5 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3" style="border-color: var(--border); background-color: var(--muted);">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded font-mono bg-emerald-100 text-emerald-800 border border-emerald-200">Outperformance</span>
+                  <span class="text-xs text-slate-500">Active OEICs · Investment Trusts · Smart-Beta ETFs</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                  Top 5 funds that achieved higher growth than <span id="top5-index-name" class="text-indigo-900">Index</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Ranked by 20-year CAGR net of OCF · UK Active OEICs, LSE Investment Trusts and Smart-Beta Factor ETFs
+                </p>
+                <div class="mt-2 text-xs font-semibold text-emerald-800">
+                  Benchmark to beat: <strong id="top5-benchmark-cagr-badge" class="font-mono-num font-bold">20Y: 19.27% p.a. | 10Y: 21.58% p.a.</strong>
+                </div>
+              </div>
+
+              <!-- View Toggle: Cards | Table -->
+              <div class="inline-flex rounded-lg p-0.5 border self-start sm:self-auto bg-white" style="border-color: var(--border);">
+                <button id="view-toggle-cards" type="button" class="view-btn active px-3 py-1 text-xs font-bold rounded-md bg-slate-900 text-white transition cursor-pointer">Cards</button>
+                <button id="view-toggle-table" type="button" class="view-btn px-3 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition cursor-pointer">Table</button>
+              </div>
+            </div>
+
+            <!-- View 1: Cards View (Accordion, #1 open by default) -->
+            <div id="top5-cards-view" class="p-4 sm:p-5 space-y-3">
+              <!-- Populated by app.js -->
+            </div>
+
+            <!-- View 2: Table View (Horizontal scroll, baseline row shaded) -->
+            <div id="top5-table-view" class="hidden p-4 sm:p-5 overflow-x-auto custom-scrollbar">
+              <table class="min-w-full text-xs border-collapse font-sans">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 font-bold border-b text-left" style="border-color: var(--border);">
+                    <th class="py-2.5 px-3">Rank</th>
+                    <th class="py-2.5 px-3">Fund / Benchmark (+ Manager)</th>
+                    <th class="py-2.5 px-3">Provider &amp; Type</th>
+                    <th class="py-2.5 px-3">Ticker / ISIN</th>
+                    <th class="py-2.5 px-2 text-right">OCF</th>
+                    <th class="py-2.5 px-2 text-right">20Y CAGR</th>
+                    <th class="py-2.5 px-2 text-right">Alpha vs Index</th>
+                    <th class="py-2.5 px-2 text-right">10Y</th>
+                    <th class="py-2.5 px-2 text-right">5Y</th>
+                    <th class="py-2.5 px-2 text-right">3Y</th>
+                    <th class="py-2.5 px-2 text-right">2Y</th>
+                    <th class="py-2.5 px-2.5 text-right" id="th-top5-amount-col">£10,000 (20Y)</th>
+                    <th class="py-2.5 px-2 text-right">Extra vs Index</th>
+                    <th class="py-2.5 px-2 text-center">Yrs Beat</th>
+                  </tr>
+                </thead>
+                <tbody id="top5-comparison-tbody" class="divide-y" style="border-color: var(--border);">
+                  <!-- Populated by app.js -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
         </div>
       </div>
     </section>
 
-    <!-- ================= INTERACTIVE SINGLE-INDEX DEEP DIVE CONTAINER ================= -->
-    <div id="single-index-deep-dive" class="space-y-6">
-
-      <!-- SECTION 2: SELECTED INDEX OVERVIEW & CHEAPEST UK TRACKER FUNDS -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <!-- Selected Index Hero Header -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 text-white p-5 sm:p-6">
-          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div class="space-y-1.5 max-w-3xl">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span id="detail-index-category" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-500/25 text-brand-200 border border-brand-400/30 uppercase tracking-wider">
-                  US Equities
-                </span>
-                <span id="detail-index-constituents" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-white/10 text-slate-200">
-                  503 Constituents
-                </span>
-                <span id="detail-index-currency" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                  GBP (£ Total Return)
-                </span>
-              </div>
-              <h2 id="detail-index-name" class="text-2xl sm:text-3xl font-black tracking-tight">
-                S&amp;P 500 Index
-              </h2>
-              <p id="detail-index-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Description of index...
-              </p>
-            </div>
-
-            <!-- Key 20-Year Return Highlight Box -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0 bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-white/15">
-              <div>
-                <span class="text-[10px] uppercase tracking-wider text-slate-300 block">20-Yr Annualised (CAGR)</span>
-                <span id="detail-cagr-20" class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">13.45%</span>
-                <span class="text-[10px] text-slate-300 block">per year (2007–2026)</span>
-              </div>
-              <div>
-                <span id="detail-lump-label" class="text-[10px] uppercase tracking-wider text-slate-300 block">£10,000 Grew To (20 Yrs)</span>
-                <span id="detail-value-10k" class="text-xl sm:text-2xl font-black text-white font-mono">£124,800</span>
-                <span id="detail-cum-pct" class="text-[10px] text-emerald-300 block">+1,148% total return</span>
-              </div>
-              <div class="pt-2 border-t border-white/10">
-                <span class="text-[10px] uppercase tracking-wider text-slate-300 block">10Y / 5Y / 3Y / 2Y CAGR</span>
-                <span id="detail-cagr-10-5" class="text-xs font-bold text-white font-mono">15.8% / 16.2%</span>
-                <span id="detail-cagr-3-2" class="text-[11px] font-bold text-cyan-300 font-mono block">3Y: 21.2% | 2Y: 18.2%</span>
-              </div>
-              <div class="pt-2 border-t border-white/10">
-                <span class="text-[10px] uppercase tracking-wider text-slate-300 block">Positive Calendar Yrs</span>
-                <span id="detail-pos-years" class="text-xs font-bold text-amber-300 font-mono">18 / 20 Years (90%)</span>
-              </div>
-            </div>
-          </div>
+    <!-- ================= TAB 2: COMPARE ALL 15 (HEAD-TO-HEAD & MASTER MATRIX) ================= -->
+    <section id="tab-compare" class="hidden space-y-6">
+      
+      <!-- 7.1 Head-to-Head Growth Chart -->
+      <section class="spec-card p-5 space-y-4">
+        <div>
+          <h2 id="head-to-head-title" class="text-lg sm:text-xl font-extrabold font-serif-title text-slate-900">
+            Head-to-head growth of £10,000
+          </h2>
+          <p id="head-to-head-subtitle" class="text-xs text-slate-500 mt-0.5">
+            Pick up to 4 indexes · 2007–2026 (Dividends reinvested, GBP)
+          </p>
         </div>
 
-        <!-- Cheapest Ways to Invest in This Passive Index in the UK -->
-        <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <h3 class="text-xs sm:text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-600"></i>
-              <span>How to Invest in This Index in the UK (Cheapest ISA / SIPP Passive Tracker Funds &amp; ETFs)</span>
-            </h3>
-            <span class="text-[11px] text-slate-500">Available on Vanguard, Hargreaves Lansdown, Interactive Investor, AJ Bell, Fidelity &amp; Trading 212</span>
-          </div>
-          <div id="detail-cheapest-trackers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <!-- Populated by app.js -->
-          </div>
-        </div>
-
-        <!-- Interactive 20-Year Charts (Yearly % Bar Chart & Cumulative Growth Line Chart) -->
-        <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Left Chart: 20-Year Annual % Return by Calendar Year -->
-          <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs flex flex-col">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <div>
-                <h3 class="text-sm font-extrabold text-slate-900">20-Year Annual % Returns (Year-by-Year: 2007–2026)</h3>
-                <p class="text-xs text-slate-500">Compare calendar year % returns of the passive index against its outperforming funds</p>
-              </div>
-              <div class="flex items-center gap-1.5 text-xs">
-                <label for="chart-compare-fund-select" class="text-slate-600 font-semibold">Overlay Fund:</label>
-                <select id="chart-compare-fund-select" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-500">
-                  <!-- Populated by app.js -->
-                </select>
-              </div>
-            </div>
-            <div class="relative h-72 w-full flex-1">
-              <canvas id="yearlyBarChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Right Chart: 20-Year Cumulative Growth (£10,000 Compounded: Index vs Top 5 Funds) -->
-          <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs flex flex-col">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <div>
-                <h3 class="text-sm font-extrabold text-slate-900" id="cum-chart-title">£10,000 Compounded Growth Over 20 Years (2007–2026)</h3>
-                <p class="text-xs text-slate-500">Passive Benchmark Index (dashed black) vs. Top 5 Outperforming Funds</p>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                Dividends Reinvested (GBP)
-              </span>
-            </div>
-            <div class="relative h-72 w-full flex-1">
-              <canvas id="cumulativeLineChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= SECTION 3: TOP 5 FUNDS THAT ACHIEVED HIGHER GROWTH THAN THE INDEX ================= -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div class="p-4 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-indigo-50/70 via-white to-emerald-50/70 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 text-[11px] font-extrabold rounded bg-emerald-600 text-white uppercase tracking-wider">Top 5 Alpha Leaders</span>
-              <h2 class="text-base sm:text-lg font-extrabold text-slate-900">
-                Top 5 Funds That Achieved Higher Growth Than <span id="top5-heading-index-name" class="text-brand-600">S&amp;P 500 Index</span>
-              </h2>
-            </div>
-            <p class="text-xs text-slate-600 mt-0.5">
-              Ranked by 20-year annualised return (CAGR %) net of Ongoing Charges (OCF). Includes UK Active OEICs, LSE Investment Trusts, and Smart-Beta Factor ETFs.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1.5 rounded-xl shrink-0">
-            <i data-lucide="flame" class="w-4 h-4 text-emerald-600"></i>
-            <span>Benchmark to Beat: <strong id="top5-benchmark-cagr-badge" class="font-mono">13.45% p.a.</strong></span>
-          </div>
-        </div>
-
-        <!-- Top 5 Outperforming Fund Cards -->
-        <div id="top5-funds-cards" class="p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <!-- 15 Toggle Chips -->
+        <div id="h2h-index-chips" class="flex flex-wrap gap-1.5">
           <!-- Populated by app.js -->
         </div>
 
-        <!-- Detailed Comparison Table of Index vs Top 5 Funds -->
-        <div class="px-4 sm:px-5 pb-5">
-          <div class="overflow-x-auto rounded-xl border border-slate-200">
-            <table class="min-w-full text-xs border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200 text-left">
-                  <th class="py-3 px-3">Rank</th>
-                  <th class="py-3 px-3">Fund / Benchmark Name</th>
-                  <th class="py-3 px-3">Provider &amp; Type</th>
-                  <th class="py-3 px-3">Ticker / ISIN</th>
-                  <th class="py-3 px-3 text-right">OCF %</th>
-                  <th class="py-3 px-3 text-right">20-Yr CAGR (p.a.)</th>
-                  <th class="py-3 px-3 text-right">Annual Alpha vs Index</th>
-                  <th class="py-3 px-3 text-right">10-Yr CAGR</th>
-                  <th class="py-3 px-3 text-right">5-Yr CAGR</th>
-                  <th class="py-3 px-3 text-right">3-Yr CAGR</th>
-                  <th class="py-3 px-3 text-right">2-Yr CAGR</th>
-                  <th class="py-3 px-3 text-right" id="th-lump-sum-col">£10,000 Value (20 Yrs)</th>
-                  <th class="py-3 px-3 text-right">Extra Gain vs Index</th>
-                  <th class="py-3 px-3 text-center">Yrs Beat Index</th>
-                </tr>
-              </thead>
-              <tbody id="top5-comparison-tbody" class="divide-y divide-slate-200 bg-white">
-                <!-- Populated by app.js -->
-              </tbody>
-            </table>
-          </div>
+        <div class="relative h-80 sm:h-96 w-full pt-2">
+          <canvas id="headToHeadChart"></canvas>
         </div>
       </section>
 
-      <!-- ================= SECTION 4: 20-YEAR YEAR-BY-YEAR RETURN TABLE (INDEX VS TOP 5 FUNDS) ================= -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-slate-50/70">
+      <!-- 7.2 Master 20-Year Annual % Return Matrix -->
+      <section class="spec-card overflow-hidden">
+        <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3" style="border-color: var(--border); background-color: var(--muted);">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
-              <i data-lucide="table" class="w-5 h-5 text-brand-600"></i>
-              <span>20-Year Year-by-Year Annual % Return Table (2007–2026, Including 2026): <span id="yearly-table-index-name" class="text-brand-600">S&amp;P 500</span> vs. Top 5 Funds</span>
+              <i data-lucide="table-2" class="w-5 h-5 text-indigo-700"></i>
+              <span>Master 20-Year Annual % Return Matrix — All 15 UK Passive Tracker Indexes (2007–2026, Including 2026)</span>
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">
-              Every single calendar year's percentage return over the last 20 years. Cells marked with a green dot (<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 align-middle"></span>) indicate years where that fund outperformed the passive benchmark index.
+              Click any column header to sort. Click any row to switch to Explore tab and inspect its details.
             </p>
           </div>
+
+          <!-- Heatmap Colours Toggle Checkbox -->
+          <label class="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+            <input id="matrix-heatmap-toggle" type="checkbox" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
+            <span>Heatmap colours</span>
+          </label>
         </div>
 
-        <div class="p-4 sm:p-5">
-          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-200">
-            <table class="min-w-full text-xs border-collapse">
-              <thead>
-                <tr id="detail-yearly-thead" class="bg-slate-900 text-white font-bold text-[11px] uppercase tracking-wider">
-                  <!-- Populated by app.js -->
-                </tr>
-              </thead>
-              <tbody id="detail-yearly-tbody" class="divide-y divide-slate-200 bg-white">
-                <!-- Populated by app.js -->
-              </tbody>
-            </table>
-          </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="min-w-full text-xs border-collapse">
+            <thead>
+              <tr id="master-matrix-thead" class="bg-slate-900 text-white font-bold text-[11px] uppercase tracking-wider">
+                <!-- Populated by app.js with clickable sort headers -->
+              </tr>
+            </thead>
+            <tbody id="master-matrix-tbody" class="divide-y divide-slate-200 bg-white">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
         </div>
       </section>
 
-    </div>
-
-    <!-- ================= SECTION 5: FULL 15-INDEX & 75-FUND COMPLETE CATALOG VIEW (TOGGLEABLE) ================= -->
-    <section id="all-indexes-full-catalog" class="hidden space-y-6">
-      <div class="bg-indigo-900 text-white rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
-            Complete Master Report
-          </span>
-          <h2 class="text-xl font-black mt-1">All 15 UK Passive Tracker Indexes &amp; Their Top 5 Outperforming Funds (75 Funds Total)</h2>
-          <p class="text-xs text-indigo-200 mt-0.5">
-            Comprehensive side-by-side summary of every passive tracker index, its 20-year annual return series, and the 5 funds that delivered higher long-term growth.
-          </p>
-        </div>
-        <button id="btn-close-all-catalog" type="button" class="px-3.5 py-2 rounded-xl bg-white text-indigo-950 font-bold text-xs hover:bg-indigo-50 transition cursor-pointer">
-          Return to Interactive Single-Index Explorer
-        </button>
-      </div>
-
-      <div id="all-indexes-catalog-list" class="space-y-6">
-        <!-- Populated by app.js -->
-      </div>
     </section>
 
   </main>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-slate-200 mt-10 py-6 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <footer class="border-t py-6 text-xs text-slate-500 mt-8" style="background-color: var(--card); border-color: var(--border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div>
         <strong class="text-slate-800">UK Passive Tracker Indexes &amp; Top 5 Outperforming Funds Explorer</strong> • 20-Year Historical Performance Analysis (2007–2026, Including 2026)
       </div>
@@ -490,7 +451,7 @@
     </div>
   </footer>
 
-  <!-- Data & App Scripts -->
+  <!-- Scripts -->
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
