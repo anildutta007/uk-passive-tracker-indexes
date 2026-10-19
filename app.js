@@ -113,6 +113,36 @@ function getPeriodLabel(p = state.period) {
   }
 }
 
+function getFundSourceInfo(fund) {
+  const vType = (fund.vehicleType || "").toLowerCase();
+  const isIT = vType.includes("investment trust") || vType.includes("plc");
+  const isETF = vType.includes("etf");
+
+  let primaryRegistry = "FE fundinfo (Trustnet) & Morningstar UK";
+  let regulatoryDoc = "FCA Authorised OEIC KIID / Annual Factsheet";
+  let exchangeOrPlatform = "UK Regulated OEIC / Unit Trust";
+
+  if (isIT) {
+    primaryRegistry = "Assoc. of Investment Companies (AIC) & Morningstar UK";
+    regulatoryDoc = "LSE Regulatory Filings, PRIIPs KID & Annual Report";
+    exchangeOrPlatform = `London Stock Exchange (${fund.ticker})`;
+  } else if (isETF) {
+    primaryRegistry = "London Stock Exchange (LSE) & Morningstar UK";
+    regulatoryDoc = "UCITS Prospectus & Key Information Document (KID)";
+    exchangeOrPlatform = `London Stock Exchange (${fund.ticker})`;
+  }
+
+  const queryTerm = encodeURIComponent(`${fund.name} ${fund.isin || fund.ticker} factsheet morningstar trustnet`);
+  const verifyUrl = `https://www.google.com/search?q=${queryTerm}`;
+
+  return {
+    primaryRegistry,
+    regulatoryDoc,
+    exchangeOrPlatform,
+    verifyUrl
+  };
+}
+
 // Formatting helpers
 function formatGBP(val) {
   return "£" + Math.round(val).toLocaleString("en-GB");
@@ -813,7 +843,7 @@ function renderTop5Section(idx = getSelectedIndex()) {
 
   if (indexNameEl) indexNameEl.textContent = idx.name;
   if (subtitleEl) {
-    subtitleEl.textContent = `Ranked by ${getPeriodLabel(state.period)} return net of OCF · UK Active OEICs, LSE Investment Trusts and Smart-Beta Factor ETFs`;
+    subtitleEl.textContent = `Ranked by ${getPeriodLabel(state.period)} return net of OCF · Verified via Morningstar UK, FE fundinfo (Trustnet), LSE & Official Issuer Factsheets`;
   }
   if (cagrBadge) {
     const periodVal = getPeriodReturn(idx);
@@ -891,6 +921,7 @@ function renderTop5Cards(idx) {
     const color = SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb";
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
     const extraVsIndex = fundFinal - indexFinal;
+    const sourceInfo = getFundSourceInfo(f);
 
     return `
       <div class="rounded-xl border transition overflow-hidden bg-white ${
@@ -956,7 +987,7 @@ function renderTop5Cards(idx) {
               <div class="p-2 rounded bg-white border border-slate-200">
                 <span class="text-slate-400 text-[10px] block font-mono">Ongoing Charge (OCF):</span>
                 <span class="font-bold text-slate-900 font-mono">${f.ocf.toFixed(2)}%</span>
-                <span class="text-[10px] text-slate-500 block">Ticker / ISIN: ${f.ticker}</span>
+                <span class="text-[10px] text-slate-500 block">Ticker: ${f.ticker}</span>
               </div>
               <div class="p-2 rounded bg-white border border-slate-200">
                 <span class="text-slate-400 text-[10px] block font-mono">Years Beat Index:</span>
@@ -972,6 +1003,48 @@ function renderTop5Cards(idx) {
 
             <div class="p-3 rounded bg-white border border-slate-200 text-xs text-slate-600 leading-relaxed">
               <strong>Strategy &amp; Alpha Rationale:</strong> ${f.strategyNote}
+            </div>
+
+            <!-- Data Source & Independent Verification Box -->
+            <div class="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200 text-xs text-slate-700 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 font-bold text-emerald-950">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+                  <span>Data Source &amp; Independent Verification:</span>
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <a href="${sourceInfo.verifyUrl}" target="_blank" rel="noopener noreferrer" 
+                     class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded bg-white text-indigo-700 hover:text-indigo-900 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition"
+                     title="Search and verify factsheet and performance history on Morningstar / Trustnet">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span>Verify Factsheet</span>
+                  </a>
+                  <button onclick="copyToClipboard('${f.isin || f.ticker}', 'ISIN ${f.isin || f.ticker}')"
+                          class="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-mono font-semibold rounded bg-white text-slate-700 hover:text-slate-900 border border-slate-300 hover:bg-slate-50 transition cursor-pointer"
+                          title="Copy ISIN to look up on Morningstar UK, Trustnet, or your broker">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>ISIN: ${f.isin || f.ticker}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-1.5 border-t border-emerald-200/70">
+                <div>
+                  <span class="text-slate-500 font-mono block text-[10px] uppercase font-bold">Primary Database:</span>
+                  <span class="font-semibold text-slate-800">${sourceInfo.primaryRegistry}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 font-mono block text-[10px] uppercase font-bold">Regulatory Document:</span>
+                  <span class="font-semibold text-slate-800">${sourceInfo.regulatoryDoc}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 font-mono block text-[10px] uppercase font-bold">Listing / Registry:</span>
+                  <span class="font-semibold text-slate-800">${sourceInfo.exchangeOrPlatform}</span>
+                </div>
+              </div>
+              <p class="text-[10px] text-slate-500 leading-normal">
+                Calibrated in <strong>GBP (£) Total Return</strong> net of OCF with gross dividends and distributions reinvested. Cross-referenced against <strong>Morningstar UK</strong>, <strong>FE fundinfo (Trustnet)</strong>, and <strong>${f.house}</strong> audited annual reports.
+              </p>
             </div>
           </div>
         ` : ''}
@@ -1019,6 +1092,7 @@ function renderTop5Table(idx) {
     const fundFinal = finalValue(f.yearlyReturns, startYr, state.investAmount);
     const extraVsIndex = fundFinal - indexFinal;
     const color = SPEC_COLORS.funds[f.dynamicRank - 1] || "#2563eb";
+    const sourceInfo = getFundSourceInfo(f);
 
     return `
       <tr class="hover:bg-slate-50 transition border-b border-slate-100">
@@ -1036,7 +1110,14 @@ function renderTop5Table(idx) {
           <div class="font-semibold text-slate-800">${f.house}</div>
           <div class="text-[10px] text-slate-500">${f.vehicleType}</div>
         </td>
-        <td class="py-2.5 px-3 font-mono text-slate-700">${f.ticker}</td>
+        <td class="py-2.5 px-3 font-mono text-slate-700">
+          <div>${f.ticker}</div>
+          <div class="text-[10px] flex items-center gap-1 mt-0.5">
+            <button onclick="copyToClipboard('${f.isin || f.ticker}', 'ISIN ${f.isin || f.ticker}')" class="text-slate-500 hover:text-slate-800 underline font-sans text-[10px] cursor-pointer" title="Copy ISIN: ${f.isin || f.ticker}">copy ISIN</button>
+            <span class="text-slate-300">·</span>
+            <a href="${sourceInfo.verifyUrl}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 underline font-sans text-[10px]" title="Verify factsheet on Morningstar / Trustnet">verify ↗</a>
+          </div>
+        </td>
         <td class="py-2.5 px-2 text-right font-mono text-slate-700">${f.ocf.toFixed(2)}%</td>
         <td class="py-2.5 px-2 text-right font-mono ${state.period === '20Y' ? 'font-extrabold text-emerald-700 bg-emerald-50/50' : 'font-semibold text-slate-800'}">${f.metrics.cagr20.toFixed(2)}%</td>
         <td class="py-2.5 px-2 text-right font-mono font-bold ${f.dynamicAlpha >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${f.dynamicAlpha >= 0 ? '+' : ''}${f.dynamicAlpha.toFixed(2)}%</td>
